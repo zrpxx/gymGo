@@ -6,16 +6,16 @@
           flat
           dense
           round
+          @click="toggleLeftDrawer"
           icon="menu"
           aria-label="Menu"
-          @click="toggleLeftDrawer"
         />
-
         <q-toolbar-title>
-          Quasar App
+          GymGo
         </q-toolbar-title>
-
-        <div>Quasar v{{ $q.version }}</div>
+        <q-space/>
+        <div class="q-gutter-sm row items-center no-wrap">
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -23,23 +23,95 @@
       v-model="leftDrawerOpen"
       show-if-above
       bordered
+      class="bg-primary text-white"
     >
       <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
+      <!--        预约-->
+        <q-item to="" active-class="q-item-no-link-highlighting">
+          <q-item-section avatar>
+            <q-icon name="date_range"/>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Agenda</q-item-label>
+          </q-item-section>
+        </q-item>
 
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-        />
+        <!--  课程      -->
+        <q-expansion-item
+          icon="insert_chart"
+          label="Curriculum"
+        >
+          <q-list class="q-pl-lg">
+            <q-item to="" active-class="q-item-no-link-highlighting">
+
+              <q-item-section>
+                <q-item-label>All course</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item to="/MapMarker" active-class="q-item-no-link-highlighting">
+
+              <q-item-section>
+                <q-item-label>purchase</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item to="/StreetView" active-class="q-item-no-link-highlighting">
+
+              <q-item-section>
+                <q-item-label>History</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-expansion-item>
+        <q-expansion-item
+          icon="dashboard"
+          label="Equipment"
+        >
+          <q-list class="q-pl-lg">
+            <q-item to="" active-class="q-item-no-link-highlighting">
+
+              <q-item-section>
+                <q-item-label>All equipment</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item to="/MapMarker" active-class="q-item-no-link-highlighting">
+
+              <q-item-section>
+                <q-item-label>My booked</q-item-label>
+              </q-item-section>
+            </q-item>
+
+          </q-list>
+        </q-expansion-item>
+
+        <q-item to="/Dashboard2" active-class="q-item-no-link-highlighting">
+          <q-item-section avatar>
+            <q-icon name="map"/>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Locker</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item to="/Dashboard2" active-class="q-item-no-link-highlighting">
+          <q-item-section avatar>
+            <q-icon name="dashboard"/>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Zone</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item to="/Dashboard2" active-class="q-item-no-link-highlighting">
+          <q-item-section avatar>
+            <q-icon name="person"/>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Profile</q-item-label>
+          </q-item-section>
+        </q-item>
+
       </q-list>
     </q-drawer>
 
-    <q-page-container>
+    <q-page-container class="bg-grey-2">
       <router-view />
     </q-page-container>
   </q-layout>
@@ -48,57 +120,13 @@
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
 
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-];
-
 import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
   name: 'MainLayout',
 
   components: {
+    // eslint-disable-next-line vue/no-unused-components
     EssentialLink
   },
 
@@ -106,7 +134,7 @@ export default defineComponent({
     const leftDrawerOpen = ref(false)
 
     return {
-      essentialLinks: linksList,
+      //essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value
