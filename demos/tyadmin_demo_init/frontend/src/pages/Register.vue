@@ -80,7 +80,6 @@ export default {
 </script>
 
 <style scoped>
-
 .bg-image {
   background-image: linear-gradient(135deg, #7028e4 0%, #e5b2ca 100%);
 }
