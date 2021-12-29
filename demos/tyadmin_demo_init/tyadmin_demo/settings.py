@@ -24,7 +24,10 @@ SECRET_KEY = '@$xk@g2y+zf^fg-cf422x0ri3)5o(dsfzf-tz58kfrknxy$aqc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '192.168.31.88',
+    '127.0.0.1'
+]
 
 # Application definition
 
@@ -38,7 +41,14 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'demo',
+    'captcha',
+    'tyadmin_api_cli',
+    'tyadmin_api'
 ]
+
+TY_ADMIN_CONFIG = {
+    'GEN_APPS': ['demo']
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

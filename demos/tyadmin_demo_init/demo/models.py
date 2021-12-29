@@ -135,3 +135,141 @@ class UserProfile(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+class Agendas(models.Model):
+    id = models.AutoField(blank=True, primary_key=True)
+
+    schedule_time = models.DateTimeField(blank=True, null=True)
+    status = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'agendas'
+
+
+class ArchiveBodyData(models.Model):
+    id = models.AutoField(blank=True, primary_key=True)
+
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+    measure_date = models.DateTimeField(blank=True, null=True)
+    weight = models.FloatField(blank=True, null=True)
+    height = models.FloatField(blank=True, null=True)
+    fat = models.FloatField(blank=True, null=True)
+    muscle = models.FloatField(blank=True, null=True)
+    bmi = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'archive_body_data'
+
+
+class Attends(models.Model):
+    id = models.AutoField(blank=True, primary_key=True)
+
+    course_date_time = models.DateTimeField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'attends'
+
+
+class Bills(models.Model):
+    id = models.AutoField(blank=True, primary_key=True)
+
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+    amount = models.FloatField(blank=True, null=True)
+    type = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'bills'
+
+
+class BodyData(models.Model):
+    id = models.AutoField(blank=True, primary_key=True)
+
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+    measure_date = models.DateTimeField(blank=True, null=True)
+    weight = models.FloatField(blank=True, null=True)
+    height = models.FloatField(blank=True, null=True)
+    fat = models.FloatField(blank=True, null=True)
+    muscle = models.FloatField(blank=True, null=True)
+    bmi = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'body_data'
+
+
+class Buys(models.Model):
+    id = models.AutoField(blank=True, primary_key=True)
+
+    course_left = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'buys'
+
+
+class CheckLogs(models.Model):
+    id = models.AutoField(blank=True, primary_key=True)
+
+
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+    maintenance_time = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'check_logs'
+# Unable to inspect table 'coaches'
+# The error was: list index out of range
+# Unable to inspect table 'curriculums'
+# The error was: list index out of range
+# Unable to inspect table 'customers'
+# The error was: list index out of range
+# Unable to inspect table 'equipment'
+# The error was: list index out of range
+
+
+class Lockers(models.Model):
+    id = models.AutoField(blank=True, primary_key=True)
+
+
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+    status = models.TextField(blank=True, null=True)
+    occupied_since = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'lockers'
+# Unable to inspect table 'maintainers'
+# The error was: list index out of range
+
+
+class Reviews(models.Model):
+    id = models.AutoField(blank=True, primary_key=True)
+
+
+    rating = models.IntegerField(blank=True, null=True)
+    review_text = models.TextField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'reviews'
+
+
+class Visits(models.Model):
+    id = models.AutoField(blank=True, primary_key=True)
+
+
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    deleted_at = models.DateTimeField(blank=True, null=True)
+    start_time = models.DateTimeField(blank=True, null=True)
+    end_time = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'visits'
