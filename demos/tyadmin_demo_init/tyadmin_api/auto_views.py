@@ -1,4 +1,3 @@
-
 from rest_framework import viewsets
 from tyadmin_api.custom import XadminViewSet
 from django.contrib.auth.models import Permission, Group

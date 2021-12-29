@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'demo',
     'captcha',
     'tyadmin_api_cli',
-    'tyadmin_api'
+    'tyadmin_api',
 ]
 
 TY_ADMIN_CONFIG = {

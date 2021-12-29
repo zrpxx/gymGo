@@ -263,8 +263,6 @@ class Reviews(models.Model):
 
 class Visits(models.Model):
     id = models.AutoField(blank=True, primary_key=True)
-
-
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
     deleted_at = models.DateTimeField(blank=True, null=True)
