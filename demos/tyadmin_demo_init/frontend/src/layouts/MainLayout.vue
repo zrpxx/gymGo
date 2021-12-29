@@ -14,7 +14,6 @@
         <q-toolbar-title>
           GymGo
         </q-toolbar-title>
-
       </q-toolbar>
     </q-header>
 
