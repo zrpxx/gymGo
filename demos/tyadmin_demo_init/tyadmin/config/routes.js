@@ -39,16 +39,6 @@
                 component: './AutoGenPage/UserList',
             },
             {
-                name: '修理员管理',
-                path: '/xadmin/api/maintainers',
-                component: './AutoGenPage/MaintainersList',
-            },
-            {
-                name: '教练管理',
-                path: '/xadmin/api/coaches',
-                component: './AutoGenPage/CoachesList',
-            },
-            {
                 name: '区域管理',
                 path: '/xadmin/api/zones',
                 component: './AutoGenPage/ZonesList',

@@ -42,32 +42,34 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'captcha',
-    'tyadmin_api_cli',
-    'tyadmin_api',
     'corsheaders',
+    'tyadmin_api_cli',
+    'tyadmin_api'
 ]
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 TY_ADMIN_CONFIG = {
     'GEN_APPS': ['api']
 }
 
-CORS_ORIGIN_WHITELIST = (
- 'http://127.0.0.1:8000',
- 'http://localhost:8080',
- 'http://192.168.31.88:8000'
-)
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_METHODS = (
- 'DELETE',
- 'GET',
- 'OPTIONS',
- 'PATCH',
- 'POST',
- 'PUT',
- 'VIEW',
-)
+CORS_ORIGIN_ALLOW_ALL = True
+
+# CORS_ORIGIN_WHITELIST = (
+#  'http://127.0.0.1:8000',
+#  'http://localhost:8080',
+#  'http://192.168.31.88:8000'
+# )
+#
+# CORS_ALLOW_METHODS = (
+#  'DELETE',
+#  'GET',
+#  'OPTIONS',
+#  'PATCH',
+#  'POST',
+#  'PUT',
+#  'VIEW',
+# )
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -106,8 +108,12 @@ AUTH_USER_MODEL = 'api.User'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'gymGo',
+        'USER': 'gymGo',
+        'PASSWORD': 'FDfNfbfPKdGczhGK',
+        'HOST': 'zrp.cool',
+        'PORT': '3306'
     }
 }
 

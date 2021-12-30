@@ -8,7 +8,7 @@ import CreateForm from './components/CreateForm';
 import { addAgendas, queryAgendas, removeAgendas, updateAgendas, queryAgendasVerboseName, queryAgendasListDisplay, queryAgendasDisplayOrder} from './service';
 import UpdateForm from './components/UpdateForm';
 import UploadAvatar from '@/components/UploadAvatar';
-import {queryCoaches, queryCoachesVerboseName} from '@/pages/AutoGenPage/CoachesList/service';
+import {queryUser, queryUserVerboseName} from '@/pages/AutoGenPage/UserList/service';
 
 import moment from 'moment';
 const { Option } = Select;
@@ -208,13 +208,13 @@ const TableList = () => {
    
                                 const [coachForeignKeyList, setCoachForeignKeyList] = useState([]);
                                 useEffect(() => {
-                                queryCoaches({all: 1}).then(value => {
+                                queryUser({all: 1}).then(value => {
                                      setCoachForeignKeyList(value);
                                 });
                                 }, []);
                                 const [coachVerboseNameMap, setCoachVerboseNameMap] = useState([]);
                                 useEffect(() => {
-                                queryCoachesVerboseName().then(value => {
+                                queryUserVerboseName().then(value => {
                                     setCoachVerboseNameMap(value);
                                 });
                                 }, []);

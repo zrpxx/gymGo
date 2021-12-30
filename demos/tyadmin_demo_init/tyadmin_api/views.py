@@ -3,13 +3,12 @@ from django.contrib.auth.hashers import make_password
 from django.shortcuts import render
 from django.views import View
 from rest_framework.views import APIView
-from django.contrib.auth.decorators import login_required
+from api.models import User
 from tyadmin_api_cli.contants import SYS_LABELS
 from tyadmin_api.custom import XadminViewSet, custom_exception_handler
 from tyadmin_api.filters import TyAdminSysLogFilter, TyAdminEmailVerifyRecordFilter
 from tyadmin_api.models import TyAdminSysLog, TyAdminEmailVerifyRecord
 from tyadmin_api.serializers import TyAdminSysLogSerializer, TyAdminEmailVerifyRecordSerializer, SysUserChangePasswordSerializer
-from api.models import User
 
 
 class TyAdminSysLogViewSet(XadminViewSet):
@@ -63,10 +62,8 @@ class RichUploadSerializer(serializers.Serializer):
 
 SysUser = get_user_model()
 
-
 def is_superadmin(user):
-    return user.groups.filter(name="superadmin").exists()
-
+    return user.groups.filter(name="superadmin").exists() 
 
 def is_coach(user):
     return user.groups.filter(name="coach").exists()
@@ -100,6 +97,7 @@ class MenuView(views.APIView):
         return JsonResponse({
             "data": content
         })
+
 
 
 class DashBoardView(views.APIView):

@@ -2,7 +2,7 @@ from django_filters import rest_framework as filters
 from tyadmin_api.custom import DateFromToRangeFilter
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
-from api.models import User, Maintainers, Coaches, Zones, Customers, Agendas, ArchiveBodyData, Bills, BodyData, Curriculums, Attends, Buys, Equipment, CheckLogs, Lockers, Reviews, ReserveEquipment, ReserveAgenda
+from api.models import User, Zones, Customers, Agendas, ArchiveBodyData, Bills, BodyData, Curriculums, Attends, Buys, Equipment, CheckLogs, Lockers, Reviews, ReserveEquipment, ReserveAgenda
 
 class PermissionFilter(filters.FilterSet):
     content_type_text = filters.CharFilter(field_name="content_type")
@@ -31,24 +31,6 @@ class UserFilter(filters.FilterSet):
         model = User
         exclude = []
 
-class MaintainersFilter(filters.FilterSet):
-    user_ptr_text = filters.CharFilter(field_name="user_ptr")
-    last_login = DateFromToRangeFilter(field_name="last_login")
-    date_joined = DateFromToRangeFilter(field_name="date_joined")
-
-    class Meta:
-        model = Maintainers
-        exclude = []
-
-class CoachesFilter(filters.FilterSet):
-    user_ptr_text = filters.CharFilter(field_name="user_ptr")
-    last_login = DateFromToRangeFilter(field_name="last_login")
-    date_joined = DateFromToRangeFilter(field_name="date_joined")
-
-    class Meta:
-        model = Coaches
-        exclude = []
-
 class ZonesFilter(filters.FilterSet):
 
     class Meta:
@@ -56,10 +38,7 @@ class ZonesFilter(filters.FilterSet):
         exclude = []
 
 class CustomersFilter(filters.FilterSet):
-    user_ptr_text = filters.CharFilter(field_name="user_ptr")
     current_zone_text = filters.CharFilter(field_name="current_zone")
-    last_login = DateFromToRangeFilter(field_name="last_login")
-    date_joined = DateFromToRangeFilter(field_name="date_joined")
     register_date = DateFromToRangeFilter(field_name="register_date")
 
     class Meta:

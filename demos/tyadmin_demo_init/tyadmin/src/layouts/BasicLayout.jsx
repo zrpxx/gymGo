@@ -14,7 +14,6 @@ import { getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
 import {queryMenu} from '@/services/user';
 import DynamicIcon from '@/components/DynamicIcon';
-import UserModel from '@/models/user';
 
 const noMatch = (
   <Result

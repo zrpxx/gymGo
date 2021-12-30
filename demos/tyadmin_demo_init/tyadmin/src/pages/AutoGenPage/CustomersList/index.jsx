@@ -8,7 +8,7 @@ import CreateForm from './components/CreateForm';
 import { addCustomers, queryCustomers, removeCustomers, updateCustomers, queryCustomersVerboseName, queryCustomersListDisplay, queryCustomersDisplayOrder} from './service';
 import UpdateForm from './components/UpdateForm';
 import UploadAvatar from '@/components/UploadAvatar';
-import {queryUser, queryUserVerboseName} from '@/pages/AutoGenPage/UserList/service';import {queryZones, queryZonesVerboseName} from '@/pages/AutoGenPage/ZonesList/service';import {queryGroup} from '@/pages/AutoGenPage/GroupList/service';import {queryPermission} from '@/pages/AutoGenPage/PermissionList/service';
+import {queryZones, queryZonesVerboseName} from '@/pages/AutoGenPage/ZonesList/service';
 
 import moment from 'moment';
 const { Option } = Select;
@@ -66,9 +66,9 @@ const TableList = () => {
     }
   };
  
-  const dateFieldList = ["last_login","date_joined","register_date"]
+  const dateFieldList = ["register_date"]
   const base_columns = [{
-                             title: 'id',
+                             title: '用户ID',
                              
         hideInForm: true,
         hideInSearch: true,
@@ -83,188 +83,36 @@ const TableList = () => {
                              
                         },
                       {
-                             title: 'password',
+                             title: '用户名',
+                             
+                             
+                             dataIndex: 'username',
+                             valueType: 'textarea',
+                             rules: [
+                                     {
+                      required: true,
+                      message: '用户名为必填项',
+                     },
+                             ],
+                             
+                             
+                        },
+                      {
+                             title: '密码',
                              
         hideInTable: true,
         hideInSearch: true,
         
                              
                              dataIndex: 'password',
-                             
+                             valueType: 'textarea',
                              rules: [
                                      {
                       required: true,
-                      message: 'password为必填项',
+                      message: '密码为必填项',
                      },
                              ],
                              
-                             
-                        },
-                      {
-                             title: 'last_login',
-                             
-                             
-                             dataIndex: 'last_login',
-                             valueType: 'dateTime',
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'is_superuser',
-                             
-                             initialValue: false,
-                             dataIndex: 'is_superuser',
-                             
-                             rules: [
-                                     
-                             ],
-                             
-                                     render: (text, record) => {
-                                  return BooleanDisplay(text);
-                                },
-                        renderFormItem: (item, {value, onChange}) => {
-                          return BooleanFormItem(value, onChange);
-                        },
-        
-                             
-                        },
-                      {
-                             title: 'username',
-                             
-                             
-                             dataIndex: 'username',
-                             
-                             rules: [
-                                     {
-                      required: true,
-                      message: 'username为必填项',
-                     },
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'first_name',
-                             
-                             
-                             dataIndex: 'first_name',
-                             
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'last_name',
-                             
-                             
-                             dataIndex: 'last_name',
-                             
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'email',
-                             
-                             
-                             dataIndex: 'email',
-                             
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'is_staff',
-                             
-                             initialValue: false,
-                             dataIndex: 'is_staff',
-                             
-                             rules: [
-                                     
-                             ],
-                             
-                                     render: (text, record) => {
-                                  return BooleanDisplay(text);
-                                },
-                        renderFormItem: (item, {value, onChange}) => {
-                          return BooleanFormItem(value, onChange);
-                        },
-        
-                             
-                        },
-                      {
-                             title: 'is_active',
-                             
-                             initialValue: true,
-                             dataIndex: 'is_active',
-                             
-                             rules: [
-                                     
-                             ],
-                             
-                                     render: (text, record) => {
-                                  return BooleanDisplay(text);
-                                },
-                        renderFormItem: (item, {value, onChange}) => {
-                          return BooleanFormItem(value, onChange);
-                        },
-        
-                             
-                        },
-                      {
-                             title: 'date_joined',
-                             
-            hideInForm: true,
-            
-                             
-                             dataIndex: 'date_joined',
-                             valueType: 'dateTime',
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: '用户类型',
-                             
-                             initialValue: 1,
-                             dataIndex: 'type',
-                             
-                             rules: [
-                                     
-                             ],
-                             
-                             valueEnum:{"1":"超级管理员","2":"教练","3":"维修员","4":"顾客"}
-                        },
-                      {
-                             title: 'user_ptr',
-                             
-                             
-                             dataIndex: 'user_ptr',
-                             
-                             rules: [
-                                     {
-                      required: true,
-                      message: 'user_ptr为必填项',
-                     },
-                             ],
-                             
-                        renderFormItem: (item, {value, onChange}) => {
-                                          return dealForeignKeyField(item, value, onChange, user_ptrForeignKeyList);
-                                  },
-                        render: (text, record) => {
-                              return renderForeignKey(text, user_ptrVerboseNameMap);
-                            },
                              
                         },
                       {
@@ -359,46 +207,6 @@ const TableList = () => {
                             },
                              
                         },
-                      {
-                             title: 'groups',
-                             
-                             
-                             dataIndex: 'groups',
-                             
-                             rules: [
-                                     
-                             ],
-                             
-                
-                renderFormItem: (item, {value, onChange, type, defaultRender}) => {
-                      return dealManyToManyField(item, value,onChange,type, groupsManyToManyList)
-                },
-               render: (text, record) => {
-                    return renderManyToMany(text)
-            }, 
-        
-                             
-                        },
-                      {
-                             title: 'user_permissions',
-                             
-                             
-                             dataIndex: 'user_permissions',
-                             
-                             rules: [
-                                     
-                             ],
-                             
-                
-                renderFormItem: (item, {value, onChange, type, defaultRender}) => {
-                      return dealManyToManyField(item, value,onChange,type, user_permissionsManyToManyList)
-                },
-               render: (text, record) => {
-                    return renderManyToMany(text)
-            }, 
-        
-                             
-                        },
                           {
                               title: '操作',
                               dataIndex: 'option',
@@ -409,7 +217,7 @@ const TableList = () => {
                                 <>
 
                                   <EditOutlined title="编辑" className="icon" onClick={async () => {
-                                   record.last_login = record.last_login === null ? record.last_login : moment(record.last_login);record.date_joined = record.date_joined === null ? record.date_joined : moment(record.date_joined);record.register_date = record.register_date === null ? record.register_date : moment(record.register_date);
+                                   record.register_date = record.register_date === null ? record.register_date : moment(record.register_date);
                                     handleUpdateModalVisible(true);
                                     setUpdateFormValues(record);
                                   }} />
@@ -460,18 +268,6 @@ const TableList = () => {
 
 
    
-                                const [user_ptrForeignKeyList, setUser_ptrForeignKeyList] = useState([]);
-                                useEffect(() => {
-                                queryUser({all: 1}).then(value => {
-                                     setUser_ptrForeignKeyList(value);
-                                });
-                                }, []);
-                                const [user_ptrVerboseNameMap, setUser_ptrVerboseNameMap] = useState([]);
-                                useEffect(() => {
-                                queryUserVerboseName().then(value => {
-                                    setUser_ptrVerboseNameMap(value);
-                                });
-                                }, []);
                                 const [current_zoneForeignKeyList, setCurrent_zoneForeignKeyList] = useState([]);
                                 useEffect(() => {
                                 queryZones({all: 1}).then(value => {
@@ -485,17 +281,7 @@ const TableList = () => {
                                 });
                                 }, []);
 
-   const [groupsManyToManyList, setGroupsManyToManyList] = useState([]);
-                        useEffect(() => {
-                          queryGroup({all:1}).then(value => {
-                            setGroupsManyToManyList(value);
-                          });
-                        }, []);const [user_permissionsManyToManyList, setUser_permissionsManyToManyList] = useState([]);
-                        useEffect(() => {
-                          queryPermission({all:1}).then(value => {
-                            setUser_permissionsManyToManyList(value);
-                          });
-                        }, []);
+   
   return (
     <PageHeaderWrapper>
       <ProTable

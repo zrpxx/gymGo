@@ -8,7 +8,7 @@ import CreateForm from './components/CreateForm';
 import { addCheckLogs, queryCheckLogs, removeCheckLogs, updateCheckLogs, queryCheckLogsVerboseName, queryCheckLogsListDisplay, queryCheckLogsDisplayOrder} from './service';
 import UpdateForm from './components/UpdateForm';
 import UploadAvatar from '@/components/UploadAvatar';
-import {queryEquipment, queryEquipmentVerboseName} from '@/pages/AutoGenPage/EquipmentList/service';import {queryMaintainers, queryMaintainersVerboseName} from '@/pages/AutoGenPage/MaintainersList/service';
+import {queryEquipment, queryEquipmentVerboseName} from '@/pages/AutoGenPage/EquipmentList/service';import {queryUser, queryUserVerboseName} from '@/pages/AutoGenPage/UserList/service';
 
 import moment from 'moment';
 const { Option } = Select;
@@ -226,13 +226,13 @@ const TableList = () => {
                                 }, []);
                                 const [maintainerForeignKeyList, setMaintainerForeignKeyList] = useState([]);
                                 useEffect(() => {
-                                queryMaintainers({all: 1}).then(value => {
+                                queryUser({all: 1}).then(value => {
                                      setMaintainerForeignKeyList(value);
                                 });
                                 }, []);
                                 const [maintainerVerboseNameMap, setMaintainerVerboseNameMap] = useState([]);
                                 useEffect(() => {
-                                queryMaintainersVerboseName().then(value => {
+                                queryUserVerboseName().then(value => {
                                     setMaintainerVerboseNameMap(value);
                                 });
                                 }, []);
