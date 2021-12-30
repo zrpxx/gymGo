@@ -8,6 +8,7 @@ from django.shortcuts import render
 import json
 from api.models import Agendas, Attends, User, Customers, Equipment, ReserveEquipment, Lockers, Buys, Curriculums, Zones, \
     ReserveAgenda, BodyData, ArchiveBodyData, Bills
+
 from django.utils.timezone import now
 
 
@@ -314,7 +315,6 @@ def ActivateReservedEquipment(request):
         "status": 'ok',
     })
 
-
 def BuyCourse(request):
     content = request.GET
     user_id = content['user_id']
@@ -329,9 +329,15 @@ def BuyCourse(request):
 
     customer = Customers.objects.get(id=user_id)
     course = Curriculums.objects.get(id=course_id)
+
+    if course.price * time > customer.balance:
+        return JsonResponse({
+            "status": 'error',
+            "message": "No sufficient balance",
+        })
     if Buys.objects.filter(customer=customer, course=course).exists():
         buy = Buys.objects.get(customer=customer, course=course)
-        buy.course_left = buy.course_left + eval(time)
+        buy.course_left = buy.course_left + time
         buy.save()
         return JsonResponse({
             "status": 'ok',
@@ -360,6 +366,11 @@ def initLocker(request):
     return JsonResponse({
         "status": 'ok',
     })
+
+
+
+def reserveAgenda(request):
+    content = request.GET
 
 
 def occupyLocker(request):
@@ -461,7 +472,6 @@ def getUserBuy(request):
             "coach_id": buy.course.coach.id,
         } for buy in buys]
     })
-
 
 def deposit(request):
     content = request.GET

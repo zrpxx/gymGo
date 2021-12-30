@@ -18,7 +18,7 @@
 
     <q-card-actions>
       <q-btn flat round icon="event" />
-      <q-btn flat color="primary" size="20px" @click="tryClick">
+      <q-btn flat color="primary" size="20px" @click="tryCancel">
         Cancel
       </q-btn>
     </q-card-actions>
@@ -27,10 +27,32 @@
 
 <script>
 import {defineComponent} from 'vue'
+import {Notify} from "quasar";
 
 export default defineComponent({
   name: "CardReservedEquipment",
-  props: ['Equipment_photo', 'Equipment_name']
+  props: ['Equipment_photo', 'Equipment_name'],
+  data(){
+
+  },
+  methods:{
+    tryCancel(){
+      let _this=this
+      let arr = []
+      let id=sessionStorage.getItem(equipment_id)
+      console.log(equipment_id)
+      this.$api.delete('/api/xadmin/v1/book_equipment',{
+        id:id
+      }).then(function (response) {
+        console.log(response)
+      }).catch(function (error) {
+        Notify.create({
+          message:""
+        })
+        console.log(error)
+      })
+    }
+    }
 })
 
 </script>

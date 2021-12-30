@@ -39,6 +39,9 @@
               <div>
                 <q-btn class="login" label="Login" type="button" color="primary" @click="tryLogin"/>
               </div>
+              <div>
+                <q-btn to="/register" class="login" label="Register" type="button" color="primary"/>
+              </div>
             </q-form>
           </q-card-section>
         </q-card>
@@ -49,6 +52,8 @@
 
 <script>
 
+import {Notify} from "quasar";
+
 export default {
   data () {
     return {
@@ -58,12 +63,29 @@ export default {
   },
   methods:{
     tryLogin(){
-      this.$api.post('',{
-        username:this.username,
-        password:this.password
+      let _this=this
+      this.$api.get('/userapi/login',{
+        params: {
+          username:this.username,
+          password:this.password
+        }
       }).then(function (response) {
         console.log(response)
+        let res=response.data
+        if(res.status=="ok"){
+          sessionStorage.setItem('user_id', res.id)
+          _this.$router.push('/profile')
+        }else {
+          Notify.create(
+            {
+              type: 'negative',
+              message: 'username or password error'
+            })
+        }
       }).catch(function (error) {
+        Notify.create({
+          message:""
+        })
           console.log(error)
       })
     }

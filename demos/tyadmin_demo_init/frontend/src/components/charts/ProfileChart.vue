@@ -161,6 +161,38 @@ export default {
         // this.line_chart.resize();
       }
     },
+
+    tryConfirm(){
+      let _this=this
+      let arr = []
+      this.$api.post('/api/xadmin/v1/equipment').then(function (response) {
+        console.log(response)
+        let res=response.data.data
+        console.log(res)
+        for(let i=0;i<res.length;i++){
+          let item ={
+            equipment_id:0,
+            Equipment_photo:"",
+            Equipment_name:"",
+            Equipment_status:""
+          }
+          item.equipment_id=res[i].id
+          item.Equipment_photo=res[i].image
+          item.Equipment_name=res[i].name
+          item.Equipment_status=res[i].status
+          sessionStorage.setItem('equipment_id',res[i].id)
+          arr.push(item)
+        }
+        _this.data = arr
+        console.log(_this.data)
+      }).catch(function (error) {
+        Notify.create({
+          message:""
+        })
+        console.log(error)
+      })
+    },
+
     record_body_data() {
       let _this=this
       let uid = _this.sessionStorage.getItem('user_id')

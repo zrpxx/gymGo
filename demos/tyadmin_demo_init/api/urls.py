@@ -12,10 +12,12 @@ urlpatterns = [
     path('get_reserve_equipment', views.GetReservedEquipments),
     path('cancel_reserve_equipment', views.CancelReservedEquipment),
     path('activate_reserve_equipment', views.ActivateReservedEquipment),
+    path('reserve_agenda', views.reserveAgenda),
     path('occupy_locker', views.occupyLocker),
     path('free_locker', views.freeLocker),
     path('enter_zone', views.enterZone),
     path('leave', views.leaveZone),
+  
     path('get_user_buy', views.getUserBuy),
     path('get_coach_agenda', views.getCoachAgenda),
     path('set_coach_agenda', views.setCoachAgenda),

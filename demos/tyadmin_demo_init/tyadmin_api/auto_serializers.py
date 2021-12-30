@@ -185,11 +185,6 @@ class UserCreateUpdateSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-    def update(self, instance, validated_data):
-        instance = super().update(instance, validated_data)
-        instance.save()
-        return
-
 
 class CustomersListSerializer(serializers.ModelSerializer):
     
@@ -471,6 +466,8 @@ class BuysListSerializer(serializers.ModelSerializer):
         def get_ty_options_display_txt(obj):
             return str(obj)
     customer = CustomersSerializer()
+
+
     class CurriculumsSerializer(serializers.ModelSerializer):
         ty_options_display_txt = serializers.SerializerMethodField()
         class Meta:
