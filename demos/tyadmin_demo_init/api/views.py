@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.shortcuts import render
 import json
-from api.models import User, Customers, Curriculums, Buys, Lockers, Zones
+from api.models import User, Customers, Curriculums, Buys, Lockers, Zones, Bills, BodyData, ArchiveBodyData
 from django.utils.timezone import now
 
 
@@ -195,3 +195,95 @@ def leaveZone(request):
         return JsonResponse({
             "status": 'ok',
         })
+
+
+def deposit(request):
+    content = request.GET
+    user_id = content['user_id']
+    amount = content['amount']
+    customer = Customers.objects.get(id=user_id)
+    bill = Bills(type=1, amount=amount, customer=customer)
+    bill.save()
+    return JsonResponse({
+        "status": 'ok',
+    })
+
+
+def getProfile(request):
+    content = request.GET
+    user_id = content['user_id']
+    customer = Customers.objects.get(id=user_id)
+    dic = {}
+    dic['id'] = customer.id
+    dic['username'] = customer.username
+    dic['password'] = customer.password
+    dic['name'] = customer.name
+    dic['register_date'] = customer.register_date
+    dic['vip_level'] = customer.vip_level
+    dic['total_charge'] = customer.total_charge
+    dic['balance'] = customer.balance
+    dic['status'] = "ok"
+    records = []
+    archiveBodyData(customer)
+    data_records = BodyData.objects.filter(customer=customer).order_by('measure_date')
+    for data_record in data_records:
+        item = {'measure_date': data_record.measure_date, 'weight': data_record.weight,
+                'height': data_record.height, 'fat': data_record.fat, 'muscle': data_record.muscle,
+                'bmi': data_record.bmi}
+        records.append(item)
+    dic['body_data'] = records
+    return JsonResponse(dic)
+
+
+def archiveBodyData(customer):
+    vip = customer.vip_level
+    data_records = BodyData.objects.filter(customer=customer).order_by('measure_date')
+    if vip == 0:
+        valid = 3
+    elif vip == 1:
+        valid = 5
+    elif vip == 2:
+        valid = 10
+    elif vip == 3:
+        valid = 20
+    elif vip == 4:
+        valid = 50
+    else:
+        valid = 100
+    now_len = len(data_records)
+    if now_len > valid:
+        for i in range(now_len - valid):
+            data_record = data_records[i]
+            archive = ArchiveBodyData(measure_date=data_record.measure_date,
+                                      weight=data_record.weight,
+                                      height=data_record.height,
+                                      fat=data_record.fat,
+                                      muscle=data_record.muscle,
+                                      bmi=data_record.bmi,
+                                      customer=data_record.customer)
+            archive.save()
+            data_record.delete()
+
+
+def recordBodyData(request):
+    content = request.GET
+    user_id = content['user_id']
+    customer = Customers.objects.get(id=user_id)
+    measure_date = now()
+    weight = content['weight']
+    height = content['height']
+    fat = content['fat']
+    muscle = content['muscle']
+    bmi = content['bmi']
+    body_data = BodyData(customer=customer, measure_date=measure_date, weight=weight,
+                         height=height, fat=fat, muscle=muscle, bmi=bmi)
+    body_data.save()
+    return JsonResponse({
+        "status": 'ok',
+        "measure_date": measure_date,
+        "weight": weight,
+        "height": height,
+        "fat": fat,
+        "muscle": muscle,
+        "bmi": bmi
+    })
