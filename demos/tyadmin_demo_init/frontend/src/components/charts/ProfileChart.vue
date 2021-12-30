@@ -64,7 +64,7 @@
 
 <script>
 import * as echarts from "echarts";
-import {useQuasar} from 'quasar'
+import {Notify, useQuasar} from 'quasar'
 import { ref } from 'vue'
 export default {
   name: "ProfileChart",
@@ -82,7 +82,7 @@ export default {
           trigger: 'axis',
         },
         legend: {
-          data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
+          data: ['height', 'weight', 'fat', 'muscle', 'BMI']
         },
         grid: {
           left: '3%',
@@ -98,38 +98,38 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          data: ['1', '2', '3', '4', '5', '6', '7']
         },
         yAxis: {
           type: 'value'
         },
         series: [
           {
-            name: 'Email',
+            name: 'height',
             type: 'line',
             stack: 'Total',
             data: [120, 132, 101, 134, 90, 230, 210]
           },
           {
-            name: 'Union Ads',
+            name: 'weight',
             type: 'line',
             stack: 'Total',
             data: [220, 182, 191, 234, 290, 330, 310]
           },
           {
-            name: 'Video Ads',
+            name: 'fat',
             type: 'line',
             stack: 'Total',
             data: [150, 232, 201, 154, 190, 330, 410]
           },
           {
-            name: 'Direct',
+            name: 'muscle',
             type: 'line',
             stack: 'Total',
             data: [320, 332, 301, 334, 390, 330, 320]
           },
           {
-            name: 'Search Engine',
+            name: 'BMI',
             type: 'line',
             stack: 'Total',
             data: [820, 932, 901, 934, 1290, 1330, 1320]
@@ -162,6 +162,34 @@ export default {
     },
 
     tryConfirm(){
+      let _this=this
+      let arr = []
+      this.$api.post('/api/xadmin/v1/equipment').then(function (response) {
+        console.log(response)
+        let res=response.data.data
+        console.log(res)
+        for(let i=0;i<res.length;i++){
+          let item ={
+            equipment_id:0,
+            Equipment_photo:"",
+            Equipment_name:"",
+            Equipment_status:""
+          }
+          item.equipment_id=res[i].id
+          item.Equipment_photo=res[i].image
+          item.Equipment_name=res[i].name
+          item.Equipment_status=res[i].status
+          sessionStorage.setItem('equipment_id',res[i].id)
+          arr.push(item)
+        }
+        _this.data = arr
+        console.log(_this.data)
+      }).catch(function (error) {
+        Notify.create({
+          message:""
+        })
+        console.log(error)
+      })
 
     }
   }
