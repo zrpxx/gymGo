@@ -23,6 +23,7 @@ urlpatterns = [
     path('flush_agenda', views.FlushAgenda),
     path('deposit', views.deposit),
     path('get_profile', views.getProfile),
-    path('record_body_data', views.recordBodyData)
+    path('record_body_data', views.recordBodyData),
+    path('get_user_attend', views.getUserAttend),
 ]
 

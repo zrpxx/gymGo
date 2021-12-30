@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.shortcuts import render
 import json
-from api.models import Agendas, User, Customers, Equipment, ReserveEquipment, Lockers, Buys, Curriculums, Zones, \
+from api.models import Agendas, Attends, User, Customers, Equipment, ReserveEquipment, Lockers, Buys, Curriculums, Zones, \
     ReserveAgenda, BodyData, ArchiveBodyData, Bills
 from django.utils.timezone import now
 
@@ -19,6 +19,26 @@ def init(coach):
             agenda = Agendas(day=i, schedule_time=datetime.time(hour=j),
                              status=1, coach=coach)
             agenda.save()
+
+
+def getUserAttend(request):
+    content = request.GET
+    user_id = content['user_id']
+    user = Customers.objects.get(id=user_id)
+    result = []
+    for attend in Attends.objects.filter(customer=user):
+        result.append({
+            "id": attend.id,
+            "course_id": attend.course.id,
+            "course_name": attend.course.name,
+            "course_date_time": attend.course_date_time,
+            "coach_id": attend.course.coach.id,
+            "coach_description": attend.description,
+        })
+    return JsonResponse({
+        "status": 'ok',
+        "data": result
+    })
 
 
 def getCoachAgenda(request):
@@ -108,15 +128,14 @@ def CancelReservedAgenda(request):
     user_id = content['user_id']
 
     agenda = Agendas.objects.get(id=agenda_id)
-    customer = Customers.objects.get(id=user_id)
 
-    if not ReserveAgenda.objects.filter(agenda=agenda, customer=customer).exists():
+    if not ReserveAgenda.objects.filter(agenda=agenda).exists():
         return JsonResponse({
             "status": 'error',
             "message": "You have not reserved this agenda"
         })
 
-    reserve_agenda = ReserveAgenda.objects.get(agenda=agenda, customer=customer)
+    reserve_agenda = ReserveAgenda.objects.get(agenda=agenda)
     reserve_agenda.delete()
     agenda.status = 1
 

@@ -53,7 +53,7 @@
               label="BMI"
             />
             <div>
-              <q-btn class="login" label="Confirm" type="button" color="primary" @click="tryConfirm"/>
+              <q-btn class="login" label="Confirm" type="button" color="primary" @click="record_body_data()"/>
             </div>
           </q-form>
         </q-card-section>
@@ -64,7 +64,7 @@
 
 <script>
 import * as echarts from "echarts";
-import {useQuasar} from 'quasar'
+import {Notify, useQuasar} from 'quasar'
 import { ref } from 'vue'
 export default {
   name: "ProfileChart",
@@ -82,7 +82,7 @@ export default {
           trigger: 'axis',
         },
         legend: {
-          data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
+          data: ['height', 'weight', 'fat', 'muscle', 'BMI']
         },
         grid: {
           left: '3%',
@@ -98,38 +98,38 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+          data: ['1', '2', '3', '4', '5', '6', '7']
         },
         yAxis: {
           type: 'value'
         },
         series: [
           {
-            name: 'Email',
+            name: 'height',
             type: 'line',
             stack: 'Total',
             data: [120, 132, 101, 134, 90, 230, 210]
           },
           {
-            name: 'Union Ads',
+            name: 'weight',
             type: 'line',
             stack: 'Total',
             data: [220, 182, 191, 234, 290, 330, 310]
           },
           {
-            name: 'Video Ads',
+            name: 'fat',
             type: 'line',
             stack: 'Total',
             data: [150, 232, 201, 154, 190, 330, 410]
           },
           {
-            name: 'Direct',
+            name: 'muscle',
             type: 'line',
             stack: 'Total',
             data: [320, 332, 301, 334, 390, 330, 320]
           },
           {
-            name: 'Search Engine',
+            name: 'BMI',
             type: 'line',
             stack: 'Total',
             data: [820, 932, 901, 934, 1290, 1330, 1320]
@@ -151,18 +151,103 @@ export default {
     init() {
       let lineChart = document.getElementById('lineChart');
       echarts.dispose(lineChart);
+      this.request_body_data()
       let theme = this.model ? 'dark' : 'light';
       this.line_chart = echarts.init(lineChart, theme);
       this.line_chart.setOption(this.options)
     },
     onResize() {
       if (this.line_chart) {
-        this.line_chart.resize();
+        // this.line_chart.resize();
       }
     },
-
-    tryConfirm(){
-
+    record_body_data() {
+      let _this=this
+      let uid = _this.sessionStorage.getItem('user_id')
+      this.$api.get('/userapi/record_body_data', {
+        params: {
+          user_id: uid,
+          height: _this.height,
+          weight: _this.weight,
+          fat: _this.fat,
+          muscle: _this.muscle,
+          bmi: _this.bmi,
+        }
+      }).then(function (response) {
+        let res=response.data
+        if (res.status === "ok") {
+          Notify.create({
+            type: "positive",
+            message:"record successful"
+          })
+        }
+      }).catch(function (error) {
+        Notify.create({
+          message:"error"
+        })
+        console.log(error)
+      })
+    },
+    request_body_data(){
+      let _this=this
+      let arr = []
+      let uid = _this.sessionStorage.getItem('user_id')
+      this.$api.get('/userapi/get_profile', {
+        params: {
+          user_id: uid
+        }
+      }).then(function (response) {
+        let res=response.data
+        let body_data_set = res.body_data
+        let height_list = []
+        let weight_list = []
+        let fat_list = []
+        let muscle_list = []
+        let bmi_list = []
+        for(let i=0;i<body_data_set.length;i++){
+          height_list.push(body_data_set[i].height)
+          weight_list.push(body_data_set[i].weight)
+          fat_list.push(body_data_set[i].fat)
+          muscle_list.push(body_data_set[i].muscle)
+          bmi_list.push(body_data_set[i].bmi)
+        }
+        _this.options.series = []
+        _this.options.series.push({
+          name: 'height',
+          type: 'line',
+          stack: 'Total',
+          data: height_list
+        })
+        _this.options.series.push({
+          name: 'weight',
+          type: 'line',
+          stack: 'Total',
+          data: weight_list
+        })
+        _this.options.series.push({
+          name: 'fat',
+          type: 'line',
+          stack: 'Total',
+          data: fat_list
+        })
+        _this.options.series.push({
+          name: 'muscle',
+          type: 'line',
+          stack: 'Total',
+          data: muscle_list
+        })
+        _this.options.series.push({
+          name: 'bmi',
+          type: 'line',
+          stack: 'Total',
+          data: bmi_list
+        })
+      }).catch(function (error) {
+        Notify.create({
+          message:""
+        })
+        console.log(error)
+      })
     }
   }
 }
