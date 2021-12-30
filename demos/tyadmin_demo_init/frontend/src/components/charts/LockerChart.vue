@@ -33,10 +33,13 @@ export default {
         let _this = this;
         let x = 0;
         let y = 0;
+        let user_id = sessionStorage.getItem("user_id");
+
         for (let i = 0; i < _this.lockers.length; i++) {
           //
+
           if (
-            this.lockers[i].occupied_by.id == 3 &&
+            this.lockers[i].occupied_by.id == user_id &&
             this.lockers[i].status == 2
           ) {
             _this.options.series[0].data.push([x, y, 3]);
