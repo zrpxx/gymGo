@@ -89,7 +89,7 @@ const BasicLayout = props => {
   }, []);
 
   useEffect(() => {
-    queryMenu().then(data => {
+    queryMenu(sessionStorage.getItem('user_id')).then(data => {
         let menuData = data.data
         menuData.map((item)=>{
           item.icon = <DynamicIcon type={item.icon} />

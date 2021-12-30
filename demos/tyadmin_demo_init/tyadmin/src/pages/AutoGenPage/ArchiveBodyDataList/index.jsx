@@ -8,7 +8,7 @@ import CreateForm from './components/CreateForm';
 import { addArchiveBodyData, queryArchiveBodyData, removeArchiveBodyData, updateArchiveBodyData, queryArchiveBodyDataVerboseName, queryArchiveBodyDataListDisplay, queryArchiveBodyDataDisplayOrder} from './service';
 import UpdateForm from './components/UpdateForm';
 import UploadAvatar from '@/components/UploadAvatar';
-
+import {queryCustomers, queryCustomersVerboseName} from '@/pages/AutoGenPage/CustomersList/service';
 
 import moment from 'moment';
 const { Option } = Select;
@@ -66,9 +66,9 @@ const TableList = () => {
     }
   };
  
-  const dateFieldList = ["created_at","updated_at","deleted_at","measure_date"]
+  const dateFieldList = ["measure_date"]
   const base_columns = [{
-                             title: 'id',
+                             title: '数据ID',
                              
         hideInForm: true,
         hideInSearch: true,
@@ -83,97 +83,76 @@ const TableList = () => {
                              
                         },
                       {
-                             title: 'created_at',
-                             
-                             
-                             dataIndex: 'created_at',
-                             valueType: 'dateTime',
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'updated_at',
-                             
-                             
-                             dataIndex: 'updated_at',
-                             valueType: 'dateTime',
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'deleted_at',
-                             
-                             
-                             dataIndex: 'deleted_at',
-                             valueType: 'dateTime',
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'measure_date',
+                             title: '测量时间',
                              
                              
                              dataIndex: 'measure_date',
                              valueType: 'dateTime',
                              rules: [
-                                     
+                                     {
+                      required: true,
+                      message: '测量时间为必填项',
+                     },
                              ],
                              
                              
                         },
                       {
-                             title: 'weight',
+                             title: '体重',
                              
                              
                              dataIndex: 'weight',
                              
                              rules: [
-                                     
+                                     {
+                      required: true,
+                      message: '体重为必填项',
+                     },
                              ],
                              
                              
                         },
                       {
-                             title: 'height',
+                             title: '身高',
                              
                              
                              dataIndex: 'height',
                              
                              rules: [
-                                     
+                                     {
+                      required: true,
+                      message: '身高为必填项',
+                     },
                              ],
                              
                              
                         },
                       {
-                             title: 'fat',
+                             title: '体脂',
                              
                              
                              dataIndex: 'fat',
                              
                              rules: [
-                                     
+                                     {
+                      required: true,
+                      message: '体脂为必填项',
+                     },
                              ],
                              
                              
                         },
                       {
-                             title: 'muscle',
+                             title: '肌肉',
                              
                              
                              dataIndex: 'muscle',
                              
                              rules: [
-                                     
+                                     {
+                      required: true,
+                      message: '肌肉为必填项',
+                     },
                              ],
                              
                              
@@ -185,9 +164,33 @@ const TableList = () => {
                              dataIndex: 'bmi',
                              
                              rules: [
-                                     
+                                     {
+                      required: true,
+                      message: 'bmi为必填项',
+                     },
                              ],
                              
+                             
+                        },
+                      {
+                             title: '顾客',
+                             
+                             
+                             dataIndex: 'customer',
+                             
+                             rules: [
+                                     {
+                      required: true,
+                      message: '顾客为必填项',
+                     },
+                             ],
+                             
+                        renderFormItem: (item, {value, onChange}) => {
+                                          return dealForeignKeyField(item, value, onChange, customerForeignKeyList);
+                                  },
+                        render: (text, record) => {
+                              return renderForeignKey(text, customerVerboseNameMap);
+                            },
                              
                         },
                           {
@@ -200,13 +203,13 @@ const TableList = () => {
                                 <>
 
                                   <EditOutlined title="编辑" className="icon" onClick={async () => {
-                                   record.created_at = record.created_at === null ? record.created_at : moment(record.created_at);record.updated_at = record.updated_at === null ? record.updated_at : moment(record.updated_at);record.deleted_at = record.deleted_at === null ? record.deleted_at : moment(record.deleted_at);record.measure_date = record.measure_date === null ? record.measure_date : moment(record.measure_date);
+                                   record.measure_date = record.measure_date === null ? record.measure_date : moment(record.measure_date);
                                     handleUpdateModalVisible(true);
                                     setUpdateFormValues(record);
                                   }} />
                                   <Divider type="vertical" />
                                   <Popconfirm
-                                    title="您确定要删除archive body data吗？"
+                                    title="您确定要删除身体数据（存档）吗？"
                                     placement="topRight"
                                     onConfirm={() => {
                                       handleRemove([record])
@@ -251,6 +254,18 @@ const TableList = () => {
 
 
    
+                                const [customerForeignKeyList, setCustomerForeignKeyList] = useState([]);
+                                useEffect(() => {
+                                queryCustomers({all: 1}).then(value => {
+                                     setCustomerForeignKeyList(value);
+                                });
+                                }, []);
+                                const [customerVerboseNameMap, setCustomerVerboseNameMap] = useState([]);
+                                useEffect(() => {
+                                queryCustomersVerboseName().then(value => {
+                                    setCustomerVerboseNameMap(value);
+                                });
+                                }, []);
 
    
   return (
@@ -264,17 +279,17 @@ const TableList = () => {
         scroll={{ x: '100%' }}
         columnsStateMap={columnsStateMap}
         onColumnsStateChange={(map) => setColumnsStateMap(map)}
-        headerTitle="archive body data表格"
+        headerTitle="身体数据（存档）表格"
         actionRef={actionRef}
         rowKey="id"
         toolBarRender={(action, { selectedRows }) => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
           </Button>,
-          <Button type="primary" onClick={() => exportExcelAll(paramState, queryArchiveBodyData, table_columns, 'archive body data-All')}>
+          <Button type="primary" onClick={() => exportExcelAll(paramState, queryArchiveBodyData, table_columns, '身体数据（存档）-All')}>
             <ExportOutlined /> 导出全部
           </Button>,
-          <Input.Search style={{ marginRight: 20 }} placeholder="搜索archive body data" onSearch={value => {
+          <Input.Search style={{ marginRight: 20 }} placeholder="搜索身体数据（存档）" onSearch={value => {
             setParamState({
               search: value,
             });
@@ -290,7 +305,7 @@ const TableList = () => {
                       actionRef.current.reloadAndRest();
                     }
                     else if (e.key === 'export_current') {
-                      exportExcelCurrent(selectedRows, table_columns, 'archive body data-select')
+                      exportExcelCurrent(selectedRows, table_columns, '身体数据（存档）-select')
                     }
                   }}
                   selectedKeys={[]}
@@ -341,7 +356,7 @@ const TableList = () => {
           }}
           rowKey="key"
           type="form"
-          search={twoColumns}
+          search={{}}
           form={
             {
               labelCol: { span: 6 },
@@ -367,7 +382,7 @@ const TableList = () => {
             }
           }}
           rowKey="key"
-          search={twoColumns}
+          search={{}}
           type="form"
           form={{
             initialValues: updateFormValues, labelCol: { span: 6 },

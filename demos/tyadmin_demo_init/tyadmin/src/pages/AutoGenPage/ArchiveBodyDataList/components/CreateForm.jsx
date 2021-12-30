@@ -6,9 +6,9 @@ const CreateForm = props => {
   return (
     <Modal
       destroyOnClose
-      title="新建archive body data"
+      title="新建身体数据（存档）"
       visible={modalVisible}
-      width={1200}
+      width={800}
       onCancel={() => onCancel()}
       footer={null}
     >

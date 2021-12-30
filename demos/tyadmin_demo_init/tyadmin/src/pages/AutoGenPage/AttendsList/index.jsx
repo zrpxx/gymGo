@@ -8,7 +8,7 @@ import CreateForm from './components/CreateForm';
 import { addAttends, queryAttends, removeAttends, updateAttends, queryAttendsVerboseName, queryAttendsListDisplay, queryAttendsDisplayOrder} from './service';
 import UpdateForm from './components/UpdateForm';
 import UploadAvatar from '@/components/UploadAvatar';
-
+import {queryCurriculums, queryCurriculumsVerboseName} from '@/pages/AutoGenPage/CurriculumsList/service';import {queryCustomers, queryCustomersVerboseName} from '@/pages/AutoGenPage/CustomersList/service';
 
 import moment from 'moment';
 const { Option } = Select;
@@ -68,7 +68,7 @@ const TableList = () => {
  
   const dateFieldList = ["course_date_time"]
   const base_columns = [{
-                             title: 'id',
+                             title: '上课ID',
                              
         hideInForm: true,
         hideInSearch: true,
@@ -83,8 +83,10 @@ const TableList = () => {
                              
                         },
                       {
-                             title: 'course_date_time',
+                             title: '上课时间',
                              
+            hideInForm: true,
+            
                              
                              dataIndex: 'course_date_time',
                              valueType: 'dateTime',
@@ -95,15 +97,60 @@ const TableList = () => {
                              
                         },
                       {
-                             title: 'description',
+                             title: '上课描述',
                              
                              
                              dataIndex: 'description',
                              valueType: 'textarea',
                              rules: [
-                                     
+                                     {
+                      required: true,
+                      message: '上课描述为必填项',
+                     },
                              ],
                              
+                             
+                        },
+                      {
+                             title: '课程',
+                             
+                             
+                             dataIndex: 'course',
+                             
+                             rules: [
+                                     {
+                      required: true,
+                      message: '课程为必填项',
+                     },
+                             ],
+                             
+                        renderFormItem: (item, {value, onChange}) => {
+                                          return dealForeignKeyField(item, value, onChange, courseForeignKeyList);
+                                  },
+                        render: (text, record) => {
+                              return renderForeignKey(text, courseVerboseNameMap);
+                            },
+                             
+                        },
+                      {
+                             title: '顾客',
+                             
+                             
+                             dataIndex: 'customer',
+                             
+                             rules: [
+                                     {
+                      required: true,
+                      message: '顾客为必填项',
+                     },
+                             ],
+                             
+                        renderFormItem: (item, {value, onChange}) => {
+                                          return dealForeignKeyField(item, value, onChange, customerForeignKeyList);
+                                  },
+                        render: (text, record) => {
+                              return renderForeignKey(text, customerVerboseNameMap);
+                            },
                              
                         },
                           {
@@ -122,7 +169,7 @@ const TableList = () => {
                                   }} />
                                   <Divider type="vertical" />
                                   <Popconfirm
-                                    title="您确定要删除attends吗？"
+                                    title="您确定要删除课程参加记录管理吗？"
                                     placement="topRight"
                                     onConfirm={() => {
                                       handleRemove([record])
@@ -167,6 +214,30 @@ const TableList = () => {
 
 
    
+                                const [courseForeignKeyList, setCourseForeignKeyList] = useState([]);
+                                useEffect(() => {
+                                queryCurriculums({all: 1}).then(value => {
+                                     setCourseForeignKeyList(value);
+                                });
+                                }, []);
+                                const [courseVerboseNameMap, setCourseVerboseNameMap] = useState([]);
+                                useEffect(() => {
+                                queryCurriculumsVerboseName().then(value => {
+                                    setCourseVerboseNameMap(value);
+                                });
+                                }, []);
+                                const [customerForeignKeyList, setCustomerForeignKeyList] = useState([]);
+                                useEffect(() => {
+                                queryCustomers({all: 1}).then(value => {
+                                     setCustomerForeignKeyList(value);
+                                });
+                                }, []);
+                                const [customerVerboseNameMap, setCustomerVerboseNameMap] = useState([]);
+                                useEffect(() => {
+                                queryCustomersVerboseName().then(value => {
+                                    setCustomerVerboseNameMap(value);
+                                });
+                                }, []);
 
    
   return (
@@ -180,17 +251,17 @@ const TableList = () => {
         scroll={{ x: '100%' }}
         columnsStateMap={columnsStateMap}
         onColumnsStateChange={(map) => setColumnsStateMap(map)}
-        headerTitle="attends表格"
+        headerTitle="课程参加记录管理表格"
         actionRef={actionRef}
         rowKey="id"
         toolBarRender={(action, { selectedRows }) => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
           </Button>,
-          <Button type="primary" onClick={() => exportExcelAll(paramState, queryAttends, table_columns, 'attends-All')}>
+          <Button type="primary" onClick={() => exportExcelAll(paramState, queryAttends, table_columns, '课程参加记录管理-All')}>
             <ExportOutlined /> 导出全部
           </Button>,
-          <Input.Search style={{ marginRight: 20 }} placeholder="搜索attends" onSearch={value => {
+          <Input.Search style={{ marginRight: 20 }} placeholder="搜索课程参加记录管理" onSearch={value => {
             setParamState({
               search: value,
             });
@@ -206,7 +277,7 @@ const TableList = () => {
                       actionRef.current.reloadAndRest();
                     }
                     else if (e.key === 'export_current') {
-                      exportExcelCurrent(selectedRows, table_columns, 'attends-select')
+                      exportExcelCurrent(selectedRows, table_columns, '课程参加记录管理-select')
                     }
                   }}
                   selectedKeys={[]}

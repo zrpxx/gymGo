@@ -1,0 +1,35 @@
+[
+    {
+        name: 'Home',
+        path: '/xadmin/index',
+        icon: 'dashboard',
+        component: './TyAdminBuiltIn/DashBoard'
+    },
+    {
+        path: '/xadmin/',
+        redirect: '/xadmin/index',
+    },
+    {
+        name: 'Api',
+        icon: 'BarsOutlined',
+        path: '/xadmin/api',
+        routes:
+        [
+            {
+                name: '设备管理',
+                path: '/xadmin/api/equipment',
+                component: './AutoGenPage/EquipmentList',
+            },
+            {
+                name: '维护日志',
+                path: '/xadmin/api/check_logs',
+                component: './AutoGenPage/CheckLogsList',
+            },
+            {
+                name: '设备预约',
+                path: '/xadmin/api/reserve_equipment',
+                component: './AutoGenPage/ReserveEquipmentList',
+            }
+        ]
+    }
+]

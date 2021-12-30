@@ -8,7 +8,7 @@ import CreateForm from './components/CreateForm';
 import { addAgendas, queryAgendas, removeAgendas, updateAgendas, queryAgendasVerboseName, queryAgendasListDisplay, queryAgendasDisplayOrder} from './service';
 import UpdateForm from './components/UpdateForm';
 import UploadAvatar from '@/components/UploadAvatar';
-
+import {queryUser, queryUserVerboseName} from '@/pages/AutoGenPage/UserList/service';
 
 import moment from 'moment';
 const { Option } = Select;
@@ -66,9 +66,9 @@ const TableList = () => {
     }
   };
  
-  const dateFieldList = ["schedule_time"]
+  const dateFieldList = []
   const base_columns = [{
-                             title: 'id',
+                             title: '日程ID',
                              
         hideInForm: true,
         hideInSearch: true,
@@ -83,27 +83,66 @@ const TableList = () => {
                              
                         },
                       {
-                             title: 'schedule_time',
+                             title: '日程时间',
                              
                              
                              dataIndex: 'schedule_time',
-                             valueType: 'dateTime',
+                             
                              rules: [
-                                     
+                                     {
+                      required: true,
+                      message: '日程时间为必填项',
+                     },
                              ],
                              
                              
                         },
                       {
-                             title: 'status',
+                             title: '日期',
                              
                              
+                             dataIndex: 'day',
+                             
+                             rules: [
+                                     {
+                      required: true,
+                      message: '日期为必填项',
+                     },
+                             ],
+                             
+                             valueEnum:{"1":"星期一","2":"星期二","3":"星期三","4":"星期四","5":"星期五","6":"星期六","7":"星期日"}
+                        },
+                      {
+                             title: '日程状态',
+                             
+                             initialValue: 1,
                              dataIndex: 'status',
-                             valueType: 'textarea',
+                             
                              rules: [
                                      
                              ],
                              
+                             valueEnum:{"1":"可用","2":"被预约"}
+                        },
+                      {
+                             title: '教练',
+                             
+                             
+                             dataIndex: 'coach',
+                             
+                             rules: [
+                                     {
+                      required: true,
+                      message: '教练为必填项',
+                     },
+                             ],
+                             
+                        renderFormItem: (item, {value, onChange}) => {
+                                          return dealForeignKeyField(item, value, onChange, coachForeignKeyList);
+                                  },
+                        render: (text, record) => {
+                              return renderForeignKey(text, coachVerboseNameMap);
+                            },
                              
                         },
                           {
@@ -116,13 +155,13 @@ const TableList = () => {
                                 <>
 
                                   <EditOutlined title="编辑" className="icon" onClick={async () => {
-                                   record.schedule_time = record.schedule_time === null ? record.schedule_time : moment(record.schedule_time);
+                                   
                                     handleUpdateModalVisible(true);
                                     setUpdateFormValues(record);
                                   }} />
                                   <Divider type="vertical" />
                                   <Popconfirm
-                                    title="您确定要删除agendas吗？"
+                                    title="您确定要删除日程管理吗？"
                                     placement="topRight"
                                     onConfirm={() => {
                                       handleRemove([record])
@@ -167,6 +206,18 @@ const TableList = () => {
 
 
    
+                                const [coachForeignKeyList, setCoachForeignKeyList] = useState([]);
+                                useEffect(() => {
+                                queryUser({all: 1}).then(value => {
+                                     setCoachForeignKeyList(value);
+                                });
+                                }, []);
+                                const [coachVerboseNameMap, setCoachVerboseNameMap] = useState([]);
+                                useEffect(() => {
+                                queryUserVerboseName().then(value => {
+                                    setCoachVerboseNameMap(value);
+                                });
+                                }, []);
 
    
   return (
@@ -180,17 +231,17 @@ const TableList = () => {
         scroll={{ x: '100%' }}
         columnsStateMap={columnsStateMap}
         onColumnsStateChange={(map) => setColumnsStateMap(map)}
-        headerTitle="agendas表格"
+        headerTitle="日程管理表格"
         actionRef={actionRef}
         rowKey="id"
         toolBarRender={(action, { selectedRows }) => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
           </Button>,
-          <Button type="primary" onClick={() => exportExcelAll(paramState, queryAgendas, table_columns, 'agendas-All')}>
+          <Button type="primary" onClick={() => exportExcelAll(paramState, queryAgendas, table_columns, '日程管理-All')}>
             <ExportOutlined /> 导出全部
           </Button>,
-          <Input.Search style={{ marginRight: 20 }} placeholder="搜索agendas" onSearch={value => {
+          <Input.Search style={{ marginRight: 20 }} placeholder="搜索日程管理" onSearch={value => {
             setParamState({
               search: value,
             });
@@ -206,7 +257,7 @@ const TableList = () => {
                       actionRef.current.reloadAndRest();
                     }
                     else if (e.key === 'export_current') {
-                      exportExcelCurrent(selectedRows, table_columns, 'agendas-select')
+                      exportExcelCurrent(selectedRows, table_columns, '日程管理-select')
                     }
                   }}
                   selectedKeys={[]}

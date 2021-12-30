@@ -8,7 +8,7 @@ import CreateForm from './components/CreateForm';
 import { addBills, queryBills, removeBills, updateBills, queryBillsVerboseName, queryBillsListDisplay, queryBillsDisplayOrder} from './service';
 import UpdateForm from './components/UpdateForm';
 import UploadAvatar from '@/components/UploadAvatar';
-
+import {queryCustomers, queryCustomersVerboseName} from '@/pages/AutoGenPage/CustomersList/service';
 
 import moment from 'moment';
 const { Option } = Select;
@@ -66,9 +66,9 @@ const TableList = () => {
     }
   };
  
-  const dateFieldList = ["created_at","updated_at","deleted_at"]
+  const dateFieldList = []
   const base_columns = [{
-                             title: 'id',
+                             title: '账单ID',
                              
         hideInForm: true,
         hideInSearch: true,
@@ -83,63 +83,54 @@ const TableList = () => {
                              
                         },
                       {
-                             title: 'created_at',
-                             
-                             
-                             dataIndex: 'created_at',
-                             valueType: 'dateTime',
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'updated_at',
-                             
-                             
-                             dataIndex: 'updated_at',
-                             valueType: 'dateTime',
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'deleted_at',
-                             
-                             
-                             dataIndex: 'deleted_at',
-                             valueType: 'dateTime',
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'amount',
+                             title: '金额',
                              
                              
                              dataIndex: 'amount',
                              
                              rules: [
-                                     
+                                     {
+                      required: true,
+                      message: '金额为必填项',
+                     },
                              ],
                              
                              
                         },
                       {
-                             title: 'type',
+                             title: '类型',
                              
                              
                              dataIndex: 'type',
-                             valueType: 'textarea',
+                             
                              rules: [
-                                     
+                                     {
+                      required: true,
+                      message: '类型为必填项',
+                     },
                              ],
                              
+                             valueEnum:{"1":"存入","2":"使用"}
+                        },
+                      {
+                             title: '顾客',
+                             
+                             
+                             dataIndex: 'customer',
+                             
+                             rules: [
+                                     {
+                      required: true,
+                      message: '顾客为必填项',
+                     },
+                             ],
+                             
+                        renderFormItem: (item, {value, onChange}) => {
+                                          return dealForeignKeyField(item, value, onChange, customerForeignKeyList);
+                                  },
+                        render: (text, record) => {
+                              return renderForeignKey(text, customerVerboseNameMap);
+                            },
                              
                         },
                           {
@@ -152,13 +143,13 @@ const TableList = () => {
                                 <>
 
                                   <EditOutlined title="编辑" className="icon" onClick={async () => {
-                                   record.created_at = record.created_at === null ? record.created_at : moment(record.created_at);record.updated_at = record.updated_at === null ? record.updated_at : moment(record.updated_at);record.deleted_at = record.deleted_at === null ? record.deleted_at : moment(record.deleted_at);
+                                   
                                     handleUpdateModalVisible(true);
                                     setUpdateFormValues(record);
                                   }} />
                                   <Divider type="vertical" />
                                   <Popconfirm
-                                    title="您确定要删除bills吗？"
+                                    title="您确定要删除账单管理吗？"
                                     placement="topRight"
                                     onConfirm={() => {
                                       handleRemove([record])
@@ -203,6 +194,18 @@ const TableList = () => {
 
 
    
+                                const [customerForeignKeyList, setCustomerForeignKeyList] = useState([]);
+                                useEffect(() => {
+                                queryCustomers({all: 1}).then(value => {
+                                     setCustomerForeignKeyList(value);
+                                });
+                                }, []);
+                                const [customerVerboseNameMap, setCustomerVerboseNameMap] = useState([]);
+                                useEffect(() => {
+                                queryCustomersVerboseName().then(value => {
+                                    setCustomerVerboseNameMap(value);
+                                });
+                                }, []);
 
    
   return (
@@ -216,17 +219,17 @@ const TableList = () => {
         scroll={{ x: '100%' }}
         columnsStateMap={columnsStateMap}
         onColumnsStateChange={(map) => setColumnsStateMap(map)}
-        headerTitle="bills表格"
+        headerTitle="账单管理表格"
         actionRef={actionRef}
         rowKey="id"
         toolBarRender={(action, { selectedRows }) => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
           </Button>,
-          <Button type="primary" onClick={() => exportExcelAll(paramState, queryBills, table_columns, 'bills-All')}>
+          <Button type="primary" onClick={() => exportExcelAll(paramState, queryBills, table_columns, '账单管理-All')}>
             <ExportOutlined /> 导出全部
           </Button>,
-          <Input.Search style={{ marginRight: 20 }} placeholder="搜索bills" onSearch={value => {
+          <Input.Search style={{ marginRight: 20 }} placeholder="搜索账单管理" onSearch={value => {
             setParamState({
               search: value,
             });
@@ -242,7 +245,7 @@ const TableList = () => {
                       actionRef.current.reloadAndRest();
                     }
                     else if (e.key === 'export_current') {
-                      exportExcelCurrent(selectedRows, table_columns, 'bills-select')
+                      exportExcelCurrent(selectedRows, table_columns, '账单管理-select')
                     }
                   }}
                   selectedKeys={[]}

@@ -6,9 +6,9 @@ const UpdateForm = props => {
   return (
     <Modal
       destroyOnClose
-      title="修改body data"
+      title="修改身体数据"
       visible={modalVisible}
-      width={1200}
+      width={800}
       onCancel={() => onCancel()}
       footer={null}
     >

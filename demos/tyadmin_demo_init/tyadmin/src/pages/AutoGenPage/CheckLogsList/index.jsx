@@ -8,7 +8,7 @@ import CreateForm from './components/CreateForm';
 import { addCheckLogs, queryCheckLogs, removeCheckLogs, updateCheckLogs, queryCheckLogsVerboseName, queryCheckLogsListDisplay, queryCheckLogsDisplayOrder} from './service';
 import UpdateForm from './components/UpdateForm';
 import UploadAvatar from '@/components/UploadAvatar';
-
+import {queryEquipment, queryEquipmentVerboseName} from '@/pages/AutoGenPage/EquipmentList/service';import {queryUser, queryUserVerboseName} from '@/pages/AutoGenPage/UserList/service';
 
 import moment from 'moment';
 const { Option } = Select;
@@ -66,9 +66,9 @@ const TableList = () => {
     }
   };
  
-  const dateFieldList = ["created_at","updated_at","deleted_at","maintenance_time"]
+  const dateFieldList = ["maintenance_time"]
   const base_columns = [{
-                             title: 'id',
+                             title: '维护ID',
                              
         hideInForm: true,
         hideInSearch: true,
@@ -83,51 +83,72 @@ const TableList = () => {
                              
                         },
                       {
-                             title: 'created_at',
-                             
-                             
-                             dataIndex: 'created_at',
-                             valueType: 'dateTime',
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'updated_at',
-                             
-                             
-                             dataIndex: 'updated_at',
-                             valueType: 'dateTime',
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'deleted_at',
-                             
-                             
-                             dataIndex: 'deleted_at',
-                             valueType: 'dateTime',
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'maintenance_time',
+                             title: '维护时间',
                              
                              
                              dataIndex: 'maintenance_time',
                              valueType: 'dateTime',
                              rules: [
+                                     {
+                      required: true,
+                      message: '维护时间为必填项',
+                     },
+                             ],
+                             
+                             
+                        },
+                      {
+                             title: '维护描述',
+                             
+                             initialValue: "正常",
+                             dataIndex: 'description',
+                             valueType: 'textarea',
+                             rules: [
                                      
                              ],
                              
+                             
+                        },
+                      {
+                             title: '被检查设备',
+                             
+                             
+                             dataIndex: 'equipment',
+                             
+                             rules: [
+                                     {
+                      required: true,
+                      message: '被检查设备为必填项',
+                     },
+                             ],
+                             
+                        renderFormItem: (item, {value, onChange}) => {
+                                          return dealForeignKeyField(item, value, onChange, equipmentForeignKeyList);
+                                  },
+                        render: (text, record) => {
+                              return renderForeignKey(text, equipmentVerboseNameMap);
+                            },
+                             
+                        },
+                      {
+                             title: '修理员',
+                             
+                             
+                             dataIndex: 'maintainer',
+                             
+                             rules: [
+                                     {
+                      required: true,
+                      message: '修理员为必填项',
+                     },
+                             ],
+                             
+                        renderFormItem: (item, {value, onChange}) => {
+                                          return dealForeignKeyField(item, value, onChange, maintainerForeignKeyList);
+                                  },
+                        render: (text, record) => {
+                              return renderForeignKey(text, maintainerVerboseNameMap);
+                            },
                              
                         },
                           {
@@ -140,13 +161,13 @@ const TableList = () => {
                                 <>
 
                                   <EditOutlined title="编辑" className="icon" onClick={async () => {
-                                   record.created_at = record.created_at === null ? record.created_at : moment(record.created_at);record.updated_at = record.updated_at === null ? record.updated_at : moment(record.updated_at);record.deleted_at = record.deleted_at === null ? record.deleted_at : moment(record.deleted_at);record.maintenance_time = record.maintenance_time === null ? record.maintenance_time : moment(record.maintenance_time);
+                                   record.maintenance_time = record.maintenance_time === null ? record.maintenance_time : moment(record.maintenance_time);
                                     handleUpdateModalVisible(true);
                                     setUpdateFormValues(record);
                                   }} />
                                   <Divider type="vertical" />
                                   <Popconfirm
-                                    title="您确定要删除check logs吗？"
+                                    title="您确定要删除维护日志吗？"
                                     placement="topRight"
                                     onConfirm={() => {
                                       handleRemove([record])
@@ -191,6 +212,30 @@ const TableList = () => {
 
 
    
+                                const [equipmentForeignKeyList, setEquipmentForeignKeyList] = useState([]);
+                                useEffect(() => {
+                                queryEquipment({all: 1}).then(value => {
+                                     setEquipmentForeignKeyList(value);
+                                });
+                                }, []);
+                                const [equipmentVerboseNameMap, setEquipmentVerboseNameMap] = useState([]);
+                                useEffect(() => {
+                                queryEquipmentVerboseName().then(value => {
+                                    setEquipmentVerboseNameMap(value);
+                                });
+                                }, []);
+                                const [maintainerForeignKeyList, setMaintainerForeignKeyList] = useState([]);
+                                useEffect(() => {
+                                queryUser({all: 1}).then(value => {
+                                     setMaintainerForeignKeyList(value);
+                                });
+                                }, []);
+                                const [maintainerVerboseNameMap, setMaintainerVerboseNameMap] = useState([]);
+                                useEffect(() => {
+                                queryUserVerboseName().then(value => {
+                                    setMaintainerVerboseNameMap(value);
+                                });
+                                }, []);
 
    
   return (
@@ -204,17 +249,17 @@ const TableList = () => {
         scroll={{ x: '100%' }}
         columnsStateMap={columnsStateMap}
         onColumnsStateChange={(map) => setColumnsStateMap(map)}
-        headerTitle="check logs表格"
+        headerTitle="维护日志表格"
         actionRef={actionRef}
         rowKey="id"
         toolBarRender={(action, { selectedRows }) => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
           </Button>,
-          <Button type="primary" onClick={() => exportExcelAll(paramState, queryCheckLogs, table_columns, 'check logs-All')}>
+          <Button type="primary" onClick={() => exportExcelAll(paramState, queryCheckLogs, table_columns, '维护日志-All')}>
             <ExportOutlined /> 导出全部
           </Button>,
-          <Input.Search style={{ marginRight: 20 }} placeholder="搜索check logs" onSearch={value => {
+          <Input.Search style={{ marginRight: 20 }} placeholder="搜索维护日志" onSearch={value => {
             setParamState({
               search: value,
             });
@@ -230,7 +275,7 @@ const TableList = () => {
                       actionRef.current.reloadAndRest();
                     }
                     else if (e.key === 'export_current') {
-                      exportExcelCurrent(selectedRows, table_columns, 'check logs-select')
+                      exportExcelCurrent(selectedRows, table_columns, '维护日志-select')
                     }
                   }}
                   selectedKeys={[]}
