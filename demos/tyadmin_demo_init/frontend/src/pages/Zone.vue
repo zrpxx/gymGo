@@ -55,10 +55,16 @@ export default defineComponent({
         });
       } else if (this.model === "离开") {
         let user_id = sessionStorage.getItem("user_id");
-
         api
           .get("http://192.168.31.88:8000/userapi/leave?user_id=" + user_id)
           .then((res) => {
+            this.$q.Notify.create({
+              type: "positive",
+              icon: "check",
+              message: "离开成功",
+              position: "top-right",
+              timeout: 2000,
+            });
             if (res.data.code == 200) {
               Notify.create({
                 type: "positive",
@@ -76,6 +82,16 @@ export default defineComponent({
                 timeout: 2000,
               });
             }
+          })
+          .catch((err) => {
+            Notify.create({
+              type: "negative",
+              icon: "warning",
+              message: "离开失败",
+              position: "top-right",
+              timeout: 2000,
+            });
+            console.log(err);
           });
       } else {
         api
