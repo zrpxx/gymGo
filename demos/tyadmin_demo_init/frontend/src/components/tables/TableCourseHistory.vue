@@ -72,6 +72,7 @@ import { Notify } from 'quasar'
 import { api } from 'boot/axios'
 import { getCurrentInstance } from 'vue';
 
+
 const columns = [
   {name: 'id', label: 'ID', field: row => row.id, sortable: false},
   {name: 'course_id', label: 'Course id', field: row => row.course_id, sortable: false, align: 'left',format: val => `${val}`},

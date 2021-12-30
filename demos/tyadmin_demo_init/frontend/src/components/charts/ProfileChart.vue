@@ -184,6 +184,7 @@ export default {
             message:"record successful"
           })
         }
+        _this.$router.go(0)
       }).catch(function (error) {
         Notify.create({
           message:"error"

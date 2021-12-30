@@ -28,7 +28,7 @@
                     label="Recharge amount"
                   />
                   <q-space></q-space>
-                  <q-btn class="confirm">Confirm</q-btn>
+                  <q-btn class="confirm" @click="deposit">Confirm</q-btn>
                 </q-card-actions>
               </q-card>
             </q-popup-proxy>
@@ -78,12 +78,48 @@
 
 <script>
 import {defineComponent} from 'vue'
+import {api} from "boot/axios";
+import { Notify } from 'quasar'
+
+
 
 export default defineComponent({
   name: "ProfileCard",
-  props: ['username', 'level', 'recharge', 'balance']
+  props: ['username', 'level', 'recharge', 'balance'],
   data(){
     return{
+      Amount: 0
+    }
+  },
+  methods: {
+    deposit() {
+      let _this = this
+      let uid = sessionStorage.getItem("user_id")
+      api.get('/userapi/deposit', {
+        params: {
+          user_id: uid,
+          amount: _this.Amount
+        }
+      }).then(function (response) {
+        let res = response.data
+        if (res.status === "ok") {
+          Notify.create({
+            type: "positive",
+            message: "deposit success"
+          })
+          _this.$router.go(0)
+        } else {
+          Notify.create({
+            type: "negative",
+            message: "failed"
+          })
+        }
+      }).catch(function (error) {
+        Notify.create({
+          type: "negative",
+          message: "Error"
+        })
+      })
     }
   }
 })

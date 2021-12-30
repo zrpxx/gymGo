@@ -42,14 +42,13 @@ const UserLayout = props => {
           <div className={styles.top}>
             <div className={styles.header}>
                 <img alt="logo" className={styles.logo} src={logo} />
-                <span className={styles.title}>TyAdmin</span>
+                <span className={styles.title}>GymGO</span>
             </div>
-            <div className={styles.desc}>Generate By TyAdmin Cli</div>
           </div>
           {children}
         </div>
         <DefaultFooter
-          copyright={`${new Date().getFullYear()} TyAdmin By mtianyan`}
+          copyright={`${new Date().getFullYear()} GymGo By 0324`}
           links={[
             {
               key: 'TyAdmin',
@@ -60,7 +59,7 @@ const UserLayout = props => {
             {
               key: 'github',
               title: <GithubOutlined />,
-              href: 'https://github.com/mtianyan',
+              href: 'https://github.com/zhiiw',
               blankTarget: true,
             },
             {
