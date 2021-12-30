@@ -77,7 +77,7 @@ export default defineComponent({
       } else if (this.model === "离开") {
         let user_id = sessionStorage.getItem("user_id");
         api
-          .get("http://192.168.31.88:8000/userapi/leave?user_id=" + user_id)
+          .get("/userapi/leave?user_id=" + user_id)
           .then(() => {
             // if (res.data.code == 200) {
             //   Notify.create({
@@ -109,17 +109,17 @@ export default defineComponent({
           });
       } else {
         api
-          .get("http://192.168.31.88:8000/api/xadmin/v1/zones")
+          .get("/api/xadmin/v1/zones")
           .then((res) => {
             let resArr = res.data.data;
             console.log("eeee");
 
             for (let i = 0; i < resArr.length; i++) {
-              if (this.model == resArr[i].name) {
+              if (this.model === resArr[i].name) {
                 let user_id = sessionStorage.getItem("user_id");
                 api
                   .get(
-                    "http://192.168.31.88:8000/userapi/enter_zone?user_id=" +
+                    "/userapi/enter_zone?user_id=" +
                       user_id +
                       "&zone_id=" +
                       resArr[i].id

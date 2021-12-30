@@ -25,7 +25,7 @@ export default {
   created() {
     api
       .get(
-        "http://192.168.31.88:8000/userapi/get_coach_agenda?coach_id=" +
+        "/userapi/get_coach_agenda?coach_id=" +
           this.coach_id
       )
       .then((res) => {
@@ -172,7 +172,7 @@ export default {
           let user_id = sessionStorage.getItem("user_id");
           api
             .get(
-              "http://192.168.31.88:8000/userapi/cancel_coach_agenda?agenda_id=" +
+              "/userapi/cancel_coach_agenda?agenda_id=" +
                 index +
                 "&user_id=" +
                 user_id
@@ -207,7 +207,7 @@ export default {
 
           api
             .get(
-              "http://192.168.31.88:8000/userapi/set_coach_agenda?agenda_id=" +
+              "/userapi/set_coach_agenda?agenda_id=" +
                 index +
                 "&user_id=" +
                 user_id

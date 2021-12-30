@@ -24,7 +24,7 @@ export default {
   created() {
     //get the weekdays
     api
-      .get("http://192.168.31.88:8000/api/xadmin/v1/lockers?pageSize=56")
+      .get("/api/xadmin/v1/lockers?pageSize=56")
       .then((res) => {
         console.log(res.data);
         this.lockers = res.data.data.reverse();
@@ -197,7 +197,7 @@ export default {
               .onOk(() => {
                 api
                   .get(
-                    "http://192.168.31.88:8000/userapi/occupy_locker?user_id=" +
+                    "/userapi/occupy_locker?user_id=" +
                       user_id +
                       "&" +
                       "locker_id=" +
@@ -228,7 +228,7 @@ export default {
               .onOk(() => {
                 api
                   .get(
-                    "http://192.168.31.88:8000/userapi/free_locker?user_id=" +
+                    "/userapi/free_locker?user_id=" +
                       user_id
                   )
                   .then((res) => {
@@ -250,7 +250,7 @@ export default {
             console.log("locker is free");
             this.occupied_by = false;
             console.log(
-              "http://192.168.31.88:8000/userapi/free_locker?user_id=" + user_id
+              "/userapi/free_locker?user_id=" + user_id
             );
           }
         });

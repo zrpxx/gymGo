@@ -17,7 +17,7 @@ export default {
   created() {
     let _this = this;
     api
-      .get("http://192.168.31.88:8000/api/xadmin/v1/zones")
+      .get("/api/xadmin/v1/zones")
       .then(function (res) {
         let resArr = res.data.data;
         console.log(resArr);
