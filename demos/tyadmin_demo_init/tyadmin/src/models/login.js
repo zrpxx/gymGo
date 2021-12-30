@@ -25,6 +25,10 @@ const Model = {
 
         if (response.status === 'ok') {
           const urlParams = new URL(window.location.href);
+          console.log(response)
+          if(response.user_id) {
+            sessionStorage.setItem('user_id', response.user_id);
+          }
           const params = getPageQuery();
           let {redirect} = params;
 
