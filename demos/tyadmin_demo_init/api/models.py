@@ -39,6 +39,9 @@ class Maintainers(User):
         verbose_name = "修理员管理"
         verbose_name_plural = verbose_name
 
+    def __str__(self):
+        return self.username
+
 
 class Coaches(User):
     nick_name = models.TextField(verbose_name="教练名", default="神秘人")
@@ -49,6 +52,9 @@ class Coaches(User):
         db_table = 'coaches'
         verbose_name = "教练管理"
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.nick_name
 
 
 class Zones(models.Model):
@@ -65,6 +71,8 @@ class Zones(models.Model):
         verbose_name = "区域管理"
         verbose_name_plural = verbose_name
 
+    def __str__(self):
+        return self.name
 
 class Customers(User):
     name = models.TextField(verbose_name="姓名")
@@ -105,6 +113,9 @@ class Agendas(models.Model):
         verbose_name = "日程管理"
         verbose_name_plural = verbose_name
 
+    def __str__(self):
+        return self.coach.name + "  " + self.day + "  " + self.schedule_time
+
 
 class ArchiveBodyData(models.Model):
     id = models.AutoField(primary_key=True, verbose_name="数据ID")
@@ -137,6 +148,13 @@ class Bills(models.Model):
         verbose_name = "账单管理"
         verbose_name_plural = verbose_name
 
+    def __str__(self):
+        if self.type is 1:
+            t = "deposit"
+        else:
+            t = "use"
+        return self.customer.name + " " + t + " " + self.amount + " yuan"
+
 
 class BodyData(models.Model):
     id = models.AutoField(primary_key=True, verbose_name="数据ID")
@@ -166,6 +184,9 @@ class Curriculums(models.Model):
         db_table = 'curriculums'
         verbose_name = "课程管理"
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.name
 
 
 class Attends(models.Model):
@@ -240,6 +261,9 @@ class Lockers(models.Model):
         db_table = 'lockers'
         verbose_name = "柜子管理"
         verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.id
 
 
 class Reviews(models.Model):
