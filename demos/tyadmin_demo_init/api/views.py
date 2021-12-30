@@ -1,13 +1,141 @@
+import datetime
+from datetime import timedelta
+
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from django.http import JsonResponse
 from django.shortcuts import render
 import json
-from api.models import User, Customers, Curriculums, Buys, Lockers, Zones, Bills, BodyData, ArchiveBodyData
+from api.models import Agendas, User, Customers, Equipment, ReserveEquipment, Lockers, Buys, Curriculums, Zones, \
+    ReserveAgenda, BodyData, ArchiveBodyData, Bills
+
 from django.utils.timezone import now
 
 
 # Create your views here.
+def init(coach):
+    for i in range(1, 8):
+        for j in range(8, 23, 2):
+            print(i, j, coach)
+            agenda = Agendas(day=i, schedule_time=datetime.time(hour=j),
+                             status=1, coach=coach)
+            agenda.save()
+
+
+def getCoachAgenda(request):
+    content = request.GET
+    coach_id = content['coach_id']
+    coach = User.objects.get(id=coach_id)
+    if not Agendas.objects.filter(coach=coach_id).exists():
+        init(coach)
+
+    cur_time = now()
+    cur_day = cur_time.weekday()
+
+    agendas = Agendas.objects.filter(coach=coach_id)
+    result = []
+    result_pure = []
+    for agenda in agendas:
+        if agenda.day < cur_day:
+            result.append({
+                "id": agenda.id,
+                "day": agenda.day,
+                "schedule_time": agenda.schedule_time,
+                "status": -1
+            })
+            result_pure.append(-1)
+        elif agenda.day == cur_day:
+            if agenda.schedule_time <= cur_time.time():
+                result.append({
+                    "id": agenda.id,
+                    "day": agenda.day,
+                    "schedule_time": agenda.schedule_time,
+                    "status": -1
+                })
+                result_pure.append(-1)
+            else:
+                result.append({
+                    "id": agenda.id,
+                    "day": agenda.day,
+                    "schedule_time": agenda.schedule_time,
+                    "status": agenda.status
+                })
+                result_pure.append(agenda.status)
+        else:
+            result.append({
+                "id": agenda.id,
+                "day": agenda.day,
+                "schedule_time": agenda.schedule_time,
+                "status": agenda.status
+            })
+            result_pure.append(agenda.status)
+    return JsonResponse({
+        "status": 'ok',
+        "result": result,
+        "result_pure": result_pure
+    })
+
+
+def setCoachAgenda(request):
+    content = request.GET
+    agenda_id = content['agenda_id']
+    user_id = content['user_id']
+    customer = Customers.objects.get(id=user_id)
+
+    agenda = Agendas.objects.get(id=agenda_id)
+    if agenda.status == 2:
+        return JsonResponse({
+            "status": 'error',
+            "message": "Agenda is not available"
+        })
+    if ReserveAgenda.objects.filter(agenda=agenda).exists():
+        return JsonResponse({
+            "status": 'error',
+            "message": "You have reserved this agenda"
+        })
+    new_reserve_agenda = ReserveAgenda(customer=customer, agenda=agenda)
+    new_reserve_agenda.save()
+
+    agenda.status = 2
+    agenda.save()
+    return JsonResponse({
+        "status": 'ok'
+    })
+
+
+def CancelReservedAgenda(request):
+    content = request.GET
+    agenda_id = content['agenda_id']
+    user_id = content['user_id']
+
+    agenda = Agendas.objects.get(id=agenda_id)
+    customer = Customers.objects.get(id=user_id)
+
+    if not ReserveAgenda.objects.filter(agenda=agenda, customer=customer).exists():
+        return JsonResponse({
+            "status": 'error',
+            "message": "You have not reserved this agenda"
+        })
+
+    reserve_agenda = ReserveAgenda.objects.get(agenda=agenda, customer=customer)
+    reserve_agenda.delete()
+    agenda.status = 1
+
+    agenda.save()
+
+    return JsonResponse({
+        "status": 'ok',
+    })
+
+
+def FlushAgenda(request):
+    ReserveAgenda.objects.all().delete()
+    Agendas.objects.all().update(status=1)
+
+    return JsonResponse({
+        "status": 'ok',
+    })
+
 
 def UserLogin(request):
     content = request.GET
@@ -57,6 +185,117 @@ def UserRegister(request):
     })
 
 
+def ReserveEquipments(request):
+    content = request.GET
+    user_id = content['user_id']
+    equip_id = content['equipment_id']
+    if not Customers.objects.filter(id=user_id).exists():
+        return JsonResponse({
+            "status": 'error',
+            "message": "Invalid user id"
+        })
+    if not Equipment.objects.filter(id=equip_id).exists():
+        return JsonResponse({
+            "status": 'error',
+            "message": "Invalid equipment id"
+        })
+
+    user = Customers.objects.get(id=user_id)
+    equip = Equipment.objects.get(id=equip_id)
+
+    if ReserveEquipment.objects.filter(equipment=equip).exists():
+        return JsonResponse({
+            "status": 'error',
+            "message": "Equipment has been reserved"
+        })
+
+    equip.status = 2
+    equip.save()
+
+    reserve = ReserveEquipment(customer=user, equipment=equip, due_time=now() + timedelta(hours=1))
+    reserve.save()
+    return JsonResponse({
+        "status": 'ok',
+        "reserve_id":  reserve.id
+    })
+
+
+def GetReservedEquipments(request):
+    content = request.GET
+    user_id = content['user_id']
+
+    if not Customers.objects.filter(id=user_id).exists():
+        return JsonResponse({
+            "status": 'error',
+            "message": "Invalid user id"
+        })
+
+    user = Customers.objects.get(id=user_id)
+    reserves = ReserveEquipment.objects.filter(customer=user)
+
+    result = []
+    for reserve in reserves:
+        result.append({
+            "reserve_id": reserve.id,
+            "equipment_id": reserve.equipment.id,
+            "equipment_name": reserve.equipment.name,
+            "due_time": reserve.due_time,
+            "equipment_status": reserve.equipment.status,
+            "equipment_img": reserve.equipment.image,
+        })
+
+    return JsonResponse({
+        "status": 'ok',
+        "reserved": result
+    })
+
+
+def CancelReservedEquipment(request):
+    content = request.GET
+    reserve_id = content['reserve_id']
+
+    if not ReserveEquipment.objects.filter(id=reserve_id).exists():
+        return JsonResponse({
+            "status": 'error',
+            "message": "Invalid reserve id"
+        })
+
+    reserve = ReserveEquipment.objects.get(id=reserve_id)
+
+    equip = reserve.equipment
+    equip.status = 1
+
+    reserve.delete()
+
+    return JsonResponse({
+        "status": 'ok',
+    })
+
+
+def ActivateReservedEquipment(request):
+    content = request.GET
+    reserve_id = content['reserve_id']
+
+    if not ReserveEquipment.objects.filter(id=reserve_id).exists():
+        return JsonResponse({
+            "status": 'error',
+            "message": "Invalid reserve id"
+        })
+
+    reserve = ReserveEquipment.objects.get(id=reserve_id)
+    if reserve.due_time < now():
+        return JsonResponse({
+            "status": 'error',
+            "message": "Reserve time has been expired"
+        })
+
+    equip = reserve.equipment
+    equip.status = 3
+    equip.save()
+    return JsonResponse({
+        "status": 'ok',
+    })
+
 def BuyCourse(request):
     content = request.GET
     user_id = content['user_id']
@@ -71,6 +310,7 @@ def BuyCourse(request):
 
     customer = Customers.objects.get(id=user_id)
     course = Curriculums.objects.get(id=course_id)
+
     if course.price * time > customer.balance:
         return JsonResponse({
             "status": 'error',
@@ -107,6 +347,7 @@ def initLocker(request):
     return JsonResponse({
         "status": 'ok',
     })
+
 
 
 def reserveAgenda(request):
@@ -196,6 +437,22 @@ def leaveZone(request):
             "status": 'ok',
         })
 
+
+def getUserBuy(request):
+    content = request.GET
+    user_id = content['user_id']
+    user = Customers.objects.get(id=user_id)
+    buys = Buys.objects.filter(customer=user)
+    return JsonResponse({
+        "status": 'ok',
+        "buys": [{
+            "course_id": buy.course.id,
+            "course_name": buy.course.name,
+            "course_left": buy.course_left,
+            "course_price": buy.course.price,
+            "coach_id": buy.course.coach.id,
+        } for buy in buys]
+    })
 
 def deposit(request):
     content = request.GET
