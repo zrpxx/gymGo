@@ -49,7 +49,7 @@
             />
             <q-input
               filled
-              v-model="BMI"
+              v-model="bmi"
               label="BMI"
             />
             <div>
@@ -70,6 +70,11 @@ export default {
   name: "ProfileChart",
   data () {
     return {
+      height:'',
+      weight:'',
+      fat:'',
+      muscle:'',
+      bmi:'',
       model: false,
       card: ref(false),
       options: {
