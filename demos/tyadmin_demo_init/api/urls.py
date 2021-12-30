@@ -6,6 +6,8 @@ urlpatterns = [
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
     path('login', views.UserLogin),
     path('register', views.UserRegister),
-    path('buy_course', views.BuyCourse)
+    path('buy_course', views.BuyCourse),
+    path('reserve_equipment', views.ReserveEquipments)
+
 ]
 

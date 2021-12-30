@@ -128,7 +128,7 @@ class Bills(models.Model):
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        if self.type is 1:
+        if self.type == 1:
             t = "deposit"
         else:
             t = "use"
@@ -242,7 +242,7 @@ class Lockers(models.Model):
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return self.id
+        return str(self.id)
 
 
 class Reviews(models.Model):
