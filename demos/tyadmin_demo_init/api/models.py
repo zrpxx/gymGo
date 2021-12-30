@@ -17,10 +17,12 @@ class User(AbstractUser):
     TYPE_CHOICES = (
         (1, "超级管理员"),
         (2, "教练"),
-        (3, "维修员"),
-        (4, "顾客")
+        (3, "维修员")
     )
     type = models.IntegerField(choices=TYPE_CHOICES, verbose_name="用户类型", default=1)
+    nick_name = models.CharField(max_length=20, verbose_name="昵称", default="未填写")
+    work_type = models.CharField(max_length=20, verbose_name="职位", default="未填写")
+    salary = models.IntegerField(verbose_name="工资", default=0)
 
     def __str__(self):
         return self.username
@@ -28,33 +30,6 @@ class User(AbstractUser):
     class Meta:
         verbose_name = "用户管理"
         verbose_name_plural = verbose_name
-
-
-class Maintainers(User):
-    work_type = models.TextField(verbose_name='工种', default="全能大师")
-    salary = models.FloatField(verbose_name="工资")
-
-    class Meta:
-        db_table = 'maintainers'
-        verbose_name = "修理员管理"
-        verbose_name_plural = verbose_name
-
-    def __str__(self):
-        return self.username
-
-
-class Coaches(User):
-    nick_name = models.TextField(verbose_name="教练名", default="神秘人")
-    salary = models.FloatField(verbose_name="工资")
-    address = models.TextField(verbose_name="地址")
-
-    class Meta:
-        db_table = 'coaches'
-        verbose_name = "教练管理"
-        verbose_name_plural = verbose_name
-
-    def __str__(self):
-        return self.nick_name
 
 
 class Zones(models.Model):
@@ -74,7 +49,11 @@ class Zones(models.Model):
     def __str__(self):
         return self.name
 
-class Customers(User):
+
+class Customers(models.Model):
+    id = models.AutoField(primary_key=True, verbose_name="用户ID")
+    username = models.TextField(verbose_name="用户名")
+    password = models.TextField(verbose_name="密码")
     name = models.TextField(verbose_name="姓名")
     register_date = models.DateTimeField(default=timezone.now, verbose_name="注册时间")
     vip_level = models.IntegerField(verbose_name="VIP等级")
@@ -106,7 +85,7 @@ class Agendas(models.Model):
     schedule_time = models.TimeField(verbose_name="日程时间")
     day = models.IntegerField(choices=DAY_CHOICES, verbose_name="日期")
     status = models.IntegerField(choices=STATUS_CHOICES, verbose_name="日程状态", default=1)
-    coach = models.ForeignKey(Coaches, on_delete=models.CASCADE, verbose_name="教练")
+    coach = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="教练")
 
     class Meta:
         db_table = 'agendas'
@@ -114,7 +93,7 @@ class Agendas(models.Model):
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return self.coach.name + "  " + self.day + "  " + self.schedule_time
+        return self.coach.nick_name + "  " + str(self.day) + " " + str(self.schedule_time.hour)
 
 
 class ArchiveBodyData(models.Model):
@@ -153,7 +132,7 @@ class Bills(models.Model):
             t = "deposit"
         else:
             t = "use"
-        return self.customer.name + " " + t + " " + self.amount + " yuan"
+        return self.customer.name + " " + t + " " + str(self.amount) + " yuan"
 
 
 class BodyData(models.Model):
@@ -177,7 +156,7 @@ class Curriculums(models.Model):
     name = models.TextField(verbose_name="课程名")
     type = models.TextField(verbose_name="课程类型")
     price = models.IntegerField(verbose_name="课程价格")
-    coach = models.ForeignKey(Coaches, on_delete=models.CASCADE, verbose_name="教练")
+    coach = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="教练")
     description = models.TextField(verbose_name="课程介绍")
 
     class Meta:
@@ -239,7 +218,7 @@ class CheckLogs(models.Model):
     maintenance_time = models.DateTimeField(verbose_name="维护时间")
     description = models.TextField(verbose_name="维护描述", default="正常")
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE, verbose_name="被检查设备")
-    maintainer = models.ForeignKey(Maintainers, on_delete=models.CASCADE, verbose_name="修理员")
+    maintainer = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="修理员")
 
     class Meta:
         db_table = 'check_logs'

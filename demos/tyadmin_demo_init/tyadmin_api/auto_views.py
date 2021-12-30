@@ -3,11 +3,11 @@ from rest_framework import viewsets
 from tyadmin_api.custom import XadminViewSet
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
-from api.models import User, Maintainers, Coaches, Zones, Customers, Agendas, ArchiveBodyData, Bills, BodyData, Curriculums, Attends, Buys, Equipment, CheckLogs, Lockers, Reviews, ReserveEquipment, ReserveAgenda
+from api.models import User, Zones, Customers, Agendas, ArchiveBodyData, Bills, BodyData, Curriculums, Attends, Buys, Equipment, CheckLogs, Lockers, Reviews, ReserveEquipment, ReserveAgenda
 
-from tyadmin_api.auto_serializers import PermissionListSerializer, GroupListSerializer, ContentTypeListSerializer, UserListSerializer, MaintainersListSerializer, CoachesListSerializer, ZonesListSerializer, CustomersListSerializer, AgendasListSerializer, ArchiveBodyDataListSerializer, BillsListSerializer, BodyDataListSerializer, CurriculumsListSerializer, AttendsListSerializer, BuysListSerializer, EquipmentListSerializer, CheckLogsListSerializer, LockersListSerializer, ReviewsListSerializer, ReserveEquipmentListSerializer, ReserveAgendaListSerializer
-from tyadmin_api.auto_serializers import PermissionCreateUpdateSerializer, GroupCreateUpdateSerializer, ContentTypeCreateUpdateSerializer, UserCreateUpdateSerializer, MaintainersCreateUpdateSerializer, CoachesCreateUpdateSerializer, ZonesCreateUpdateSerializer, CustomersCreateUpdateSerializer, AgendasCreateUpdateSerializer, ArchiveBodyDataCreateUpdateSerializer, BillsCreateUpdateSerializer, BodyDataCreateUpdateSerializer, CurriculumsCreateUpdateSerializer, AttendsCreateUpdateSerializer, BuysCreateUpdateSerializer, EquipmentCreateUpdateSerializer, CheckLogsCreateUpdateSerializer, LockersCreateUpdateSerializer, ReviewsCreateUpdateSerializer, ReserveEquipmentCreateUpdateSerializer, ReserveAgendaCreateUpdateSerializer
-from tyadmin_api.auto_filters import PermissionFilter, GroupFilter, ContentTypeFilter, UserFilter, MaintainersFilter, CoachesFilter, ZonesFilter, CustomersFilter, AgendasFilter, ArchiveBodyDataFilter, BillsFilter, BodyDataFilter, CurriculumsFilter, AttendsFilter, BuysFilter, EquipmentFilter, CheckLogsFilter, LockersFilter, ReviewsFilter, ReserveEquipmentFilter, ReserveAgendaFilter
+from tyadmin_api.auto_serializers import PermissionListSerializer, GroupListSerializer, ContentTypeListSerializer, UserListSerializer, ZonesListSerializer, CustomersListSerializer, AgendasListSerializer, ArchiveBodyDataListSerializer, BillsListSerializer, BodyDataListSerializer, CurriculumsListSerializer, AttendsListSerializer, BuysListSerializer, EquipmentListSerializer, CheckLogsListSerializer, LockersListSerializer, ReviewsListSerializer, ReserveEquipmentListSerializer, ReserveAgendaListSerializer
+from tyadmin_api.auto_serializers import PermissionCreateUpdateSerializer, GroupCreateUpdateSerializer, ContentTypeCreateUpdateSerializer, UserCreateUpdateSerializer, ZonesCreateUpdateSerializer, CustomersCreateUpdateSerializer, AgendasCreateUpdateSerializer, ArchiveBodyDataCreateUpdateSerializer, BillsCreateUpdateSerializer, BodyDataCreateUpdateSerializer, CurriculumsCreateUpdateSerializer, AttendsCreateUpdateSerializer, BuysCreateUpdateSerializer, EquipmentCreateUpdateSerializer, CheckLogsCreateUpdateSerializer, LockersCreateUpdateSerializer, ReviewsCreateUpdateSerializer, ReserveEquipmentCreateUpdateSerializer, ReserveAgendaCreateUpdateSerializer
+from tyadmin_api.auto_filters import PermissionFilter, GroupFilter, ContentTypeFilter, UserFilter, ZonesFilter, CustomersFilter, AgendasFilter, ArchiveBodyDataFilter, BillsFilter, BodyDataFilter, CurriculumsFilter, AttendsFilter, BuysFilter, EquipmentFilter, CheckLogsFilter, LockersFilter, ReviewsFilter, ReserveEquipmentFilter, ReserveAgendaFilter
 
     
 class PermissionViewSet(XadminViewSet):
@@ -53,39 +53,13 @@ class UserViewSet(XadminViewSet):
     serializer_class = UserListSerializer
     queryset = User.objects.all().order_by('-pk')
     filter_class = UserFilter
-    search_fields = ["password","username","first_name","last_name","email"]
+    search_fields = ["password","username","first_name","last_name","email","nick_name","work_type"]
 
     def get_serializer_class(self):
         if self.action == "list":
             return UserListSerializer
         else:
             return UserCreateUpdateSerializer
-
-    
-class MaintainersViewSet(XadminViewSet):
-    serializer_class = MaintainersListSerializer
-    queryset = Maintainers.objects.all().order_by('-pk')
-    filter_class = MaintainersFilter
-    search_fields = ["password","username","first_name","last_name","email"]
-
-    def get_serializer_class(self):
-        if self.action == "list":
-            return MaintainersListSerializer
-        else:
-            return MaintainersCreateUpdateSerializer
-
-    
-class CoachesViewSet(XadminViewSet):
-    serializer_class = CoachesListSerializer
-    queryset = Coaches.objects.all().order_by('-pk')
-    filter_class = CoachesFilter
-    search_fields = ["password","username","first_name","last_name","email"]
-
-    def get_serializer_class(self):
-        if self.action == "list":
-            return CoachesListSerializer
-        else:
-            return CoachesCreateUpdateSerializer
 
     
 class ZonesViewSet(XadminViewSet):
@@ -105,7 +79,7 @@ class CustomersViewSet(XadminViewSet):
     serializer_class = CustomersListSerializer
     queryset = Customers.objects.all().order_by('-pk')
     filter_class = CustomersFilter
-    search_fields = ["password","username","first_name","last_name","email"]
+    search_fields = []
 
     def get_serializer_class(self):
         if self.action == "list":

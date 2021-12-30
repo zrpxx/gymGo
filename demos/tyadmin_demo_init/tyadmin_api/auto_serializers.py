@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
-from api.models import User, Maintainers, Coaches, Zones, Customers, Agendas, ArchiveBodyData, Bills, BodyData, Curriculums, Attends, Buys, Equipment, CheckLogs, Lockers, Reviews, ReserveEquipment, ReserveAgenda
+from api.models import User, Zones, Customers, Agendas, ArchiveBodyData, Bills, BodyData, Curriculums, Attends, Buys, Equipment, CheckLogs, Lockers, Reviews, ReserveEquipment, ReserveAgenda
 
 
 class ContentTypeListSerializer(serializers.ModelSerializer):
@@ -179,129 +179,21 @@ class UserCreateUpdateSerializer(serializers.ModelSerializer):
     def get_ty_options_display_txt(obj):
         return str(obj)
 
+    def create(self, validated_data):
+        instance = super().create(validated_data)
+        instance.set_password(self.validated_data['password'])
+        instance.save()
+        return instance
 
-class MaintainersListSerializer(serializers.ModelSerializer):
-    
-
-    class UserSerializer(serializers.ModelSerializer):
-        ty_options_display_txt = serializers.SerializerMethodField()
-        class Meta:
-            model = User
-            fields = "__all__"
-        @staticmethod
-        def get_ty_options_display_txt(obj):
-            return str(obj)
-    user_ptr = UserSerializer()
-    class GroupSerializer(serializers.ModelSerializer):
-        ty_options_display_txt = serializers.SerializerMethodField()
-        class Meta:
-            model = Group
-            fields = "__all__"
-        @staticmethod
-        def get_ty_options_display_txt(obj):
-            return str(obj)
-    groups = GroupSerializer(many=True)
-    class PermissionSerializer(serializers.ModelSerializer):
-        ty_options_display_txt = serializers.SerializerMethodField()
-        class Meta:
-            model = Permission
-            fields = "__all__"
-        @staticmethod
-        def get_ty_options_display_txt(obj):
-            return str(obj)
-    user_permissions = PermissionSerializer(many=True)
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Maintainers
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class MaintainersCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Maintainers
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class CoachesListSerializer(serializers.ModelSerializer):
-    
-
-    class UserSerializer(serializers.ModelSerializer):
-        ty_options_display_txt = serializers.SerializerMethodField()
-        class Meta:
-            model = User
-            fields = "__all__"
-        @staticmethod
-        def get_ty_options_display_txt(obj):
-            return str(obj)
-    user_ptr = UserSerializer()
-    class GroupSerializer(serializers.ModelSerializer):
-        ty_options_display_txt = serializers.SerializerMethodField()
-        class Meta:
-            model = Group
-            fields = "__all__"
-        @staticmethod
-        def get_ty_options_display_txt(obj):
-            return str(obj)
-    groups = GroupSerializer(many=True)
-    class PermissionSerializer(serializers.ModelSerializer):
-        ty_options_display_txt = serializers.SerializerMethodField()
-        class Meta:
-            model = Permission
-            fields = "__all__"
-        @staticmethod
-        def get_ty_options_display_txt(obj):
-            return str(obj)
-    user_permissions = PermissionSerializer(many=True)
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Coaches
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class CoachesCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Coaches
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        instance.save()
+        return
 
 
 class CustomersListSerializer(serializers.ModelSerializer):
     
 
-    class UserSerializer(serializers.ModelSerializer):
-        ty_options_display_txt = serializers.SerializerMethodField()
-        class Meta:
-            model = User
-            fields = "__all__"
-        @staticmethod
-        def get_ty_options_display_txt(obj):
-            return str(obj)
-    user_ptr = UserSerializer()
     class ZonesSerializer(serializers.ModelSerializer):
         ty_options_display_txt = serializers.SerializerMethodField()
         class Meta:
@@ -311,24 +203,6 @@ class CustomersListSerializer(serializers.ModelSerializer):
         def get_ty_options_display_txt(obj):
             return str(obj)
     current_zone = ZonesSerializer()
-    class GroupSerializer(serializers.ModelSerializer):
-        ty_options_display_txt = serializers.SerializerMethodField()
-        class Meta:
-            model = Group
-            fields = "__all__"
-        @staticmethod
-        def get_ty_options_display_txt(obj):
-            return str(obj)
-    groups = GroupSerializer(many=True)
-    class PermissionSerializer(serializers.ModelSerializer):
-        ty_options_display_txt = serializers.SerializerMethodField()
-        class Meta:
-            model = Permission
-            fields = "__all__"
-        @staticmethod
-        def get_ty_options_display_txt(obj):
-            return str(obj)
-    user_permissions = PermissionSerializer(many=True)
     key = serializers.CharField(source="pk")
     ty_options_display_txt = serializers.SerializerMethodField()
 
@@ -357,15 +231,15 @@ class CustomersCreateUpdateSerializer(serializers.ModelSerializer):
 class AgendasListSerializer(serializers.ModelSerializer):
     
 
-    class CoachesSerializer(serializers.ModelSerializer):
+    class UserSerializer(serializers.ModelSerializer):
         ty_options_display_txt = serializers.SerializerMethodField()
         class Meta:
-            model = Coaches
+            model = User
             fields = "__all__"
         @staticmethod
         def get_ty_options_display_txt(obj):
             return str(obj)
-    coach = CoachesSerializer()
+    coach = UserSerializer()
     key = serializers.CharField(source="pk")
     ty_options_display_txt = serializers.SerializerMethodField()
 
@@ -505,15 +379,15 @@ class BodyDataCreateUpdateSerializer(serializers.ModelSerializer):
 class CurriculumsListSerializer(serializers.ModelSerializer):
     
 
-    class CoachesSerializer(serializers.ModelSerializer):
+    class UserSerializer(serializers.ModelSerializer):
         ty_options_display_txt = serializers.SerializerMethodField()
         class Meta:
-            model = Coaches
+            model = User
             fields = "__all__"
         @staticmethod
         def get_ty_options_display_txt(obj):
             return str(obj)
-    coach = CoachesSerializer()
+    coach = UserSerializer()
     key = serializers.CharField(source="pk")
     ty_options_display_txt = serializers.SerializerMethodField()
 
@@ -680,15 +554,15 @@ class CheckLogsListSerializer(serializers.ModelSerializer):
         def get_ty_options_display_txt(obj):
             return str(obj)
     equipment = EquipmentSerializer()
-    class MaintainersSerializer(serializers.ModelSerializer):
+    class UserSerializer(serializers.ModelSerializer):
         ty_options_display_txt = serializers.SerializerMethodField()
         class Meta:
-            model = Maintainers
+            model = User
             fields = "__all__"
         @staticmethod
         def get_ty_options_display_txt(obj):
             return str(obj)
-    maintainer = MaintainersSerializer()
+    maintainer = UserSerializer()
     key = serializers.CharField(source="pk")
     ty_options_display_txt = serializers.SerializerMethodField()
 

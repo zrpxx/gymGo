@@ -266,7 +266,43 @@ const [updatePasswordForm] = Form.useForm();
                                      
                              ],
                              
-                             valueEnum:{"1":"超级管理员","2":"教练","3":"维修员","4":"顾客"}
+                             valueEnum:{"1":"超级管理员","2":"教练","3":"维修员"}
+                        },
+                      {
+                             title: '昵称',
+                             
+                             initialValue: "未填写",
+                             dataIndex: 'nick_name',
+                             
+                             rules: [
+                                     
+                             ],
+                             
+                             
+                        },
+                      {
+                             title: '职位',
+                             
+                             initialValue: "未填写",
+                             dataIndex: 'work_type',
+                             
+                             rules: [
+                                     
+                             ],
+                             
+                             
+                        },
+                      {
+                             title: '工资',
+                             
+                             initialValue: 0,
+                             dataIndex: 'salary',
+                             valueType: 'digit',
+                             rules: [
+                                     
+                             ],
+                             
+                             
                         },
                       {
                              title: 'groups',

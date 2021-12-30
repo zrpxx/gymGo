@@ -12,10 +12,6 @@ router.register('content_type', auto_views.ContentTypeViewSet)
     
 router.register('user', auto_views.UserViewSet)
     
-router.register('maintainers', auto_views.MaintainersViewSet)
-    
-router.register('coaches', auto_views.CoachesViewSet)
-    
 router.register('zones', auto_views.ZonesViewSet)
     
 router.register('customers', auto_views.CustomersViewSet)
