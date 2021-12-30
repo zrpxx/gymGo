@@ -21,4 +21,5 @@ from django.urls import path, include, re_path
 urlpatterns = [
     re_path('^xadmin/.*', AdminIndexView.as_view()),
     path('api/xadmin/v1/', include('tyadmin_api.urls')),
+    path('userapi/', include('api.urls'))
 ]
