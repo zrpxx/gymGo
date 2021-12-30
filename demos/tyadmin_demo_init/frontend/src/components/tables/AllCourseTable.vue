@@ -156,9 +156,9 @@ export default defineComponent({
 
       api.get('/userapi/buy_course',{
         params: {
-          "user_id": sessionStorage.getItem('user_id'),
-          "course_id": _this.courseId,
-          "time":_this.quantity
+          user_id: sessionStorage.getItem('user_id'),
+          course_id: _this.courseId,
+          time:_this.quantity
         }
 
       }).then(function (response){

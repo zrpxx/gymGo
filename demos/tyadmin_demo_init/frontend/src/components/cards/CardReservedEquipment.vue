@@ -74,6 +74,7 @@ export default defineComponent({
             type: 'active',
             message: 'success'
           })
+          _this.$router.go(0)
         }else if(res.status=="error"){
           Notify.create({
             pe: 'negative',
@@ -102,6 +103,7 @@ export default defineComponent({
             type: 'active',
             message: 'success'
           })
+          _this.$router.go(0)
         }else if(res.status=="error"){
           Notify.create({
             pe: 'negative',

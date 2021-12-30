@@ -237,6 +237,12 @@ def ReserveEquipments(request):
     user = Customers.objects.get(id=user_id)
     equip = Equipment.objects.get(id=equip_id)
 
+    if equip.status != 1:
+        return JsonResponse({
+            "status": 'error',
+            "message": "Equipment Busy"
+        })
+
     if ReserveEquipment.objects.filter(equipment=equip).exists():
         return JsonResponse({
             "status": 'error',
@@ -298,6 +304,7 @@ def CancelReservedEquipment(request):
 
     equip = reserve.equipment
     equip.status = 1
+    equip.save()
 
     reserve.delete()
 
@@ -334,7 +341,8 @@ def BuyCourse(request):
     content = request.GET
     user_id = content['user_id']
     course_id = content['course_id']
-    time = content['time']
+    time = int(content['time'])
+
 
     if (not Customers.objects.filter(id=user_id).exists()) or (not Curriculums.objects.filter(id=course_id).exists()):
         return JsonResponse({
