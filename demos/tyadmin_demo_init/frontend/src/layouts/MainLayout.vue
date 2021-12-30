@@ -42,24 +42,31 @@
           label="Curriculum"
         >
           <q-list class="q-pl-lg">
-            <q-item to="" active-class="q-item-no-link-highlighting">
+            <q-item to="/all_course" active-class="q-item-no-link-highlighting">
 
               <q-item-section>
                 <q-item-label>All course</q-item-label>
               </q-item-section>
             </q-item>
-            <q-item to="/MapMarker" active-class="q-item-no-link-highlighting">
+            <q-item to="/purchased_course" active-class="q-item-no-link-highlighting">
 
               <q-item-section>
-                <q-item-label>purchase</q-item-label>
+                <q-item-label>Purchased</q-item-label>
               </q-item-section>
             </q-item>
-            <q-item to="/StreetView" active-class="q-item-no-link-highlighting">
 
+            <q-item to="/course_history" active-class="q-item-no-link-highlighting">
               <q-item-section>
                 <q-item-label>History</q-item-label>
               </q-item-section>
             </q-item>
+
+            <q-item to="/appointment" active-class="q-item-no-link-highlighting">
+              <q-item-section>
+                <q-item-label>Appointment</q-item-label>
+              </q-item-section>
+            </q-item>
+
           </q-list>
         </q-expansion-item>
         <q-expansion-item
@@ -91,7 +98,7 @@
             <q-item-label>Locker</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item to="/Dashboard2" active-class="q-item-no-link-highlighting">
+        <q-item to="" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
             <q-icon name="dashboard"/>
           </q-item-section>

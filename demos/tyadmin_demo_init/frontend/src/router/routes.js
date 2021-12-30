@@ -6,7 +6,12 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/Index.vue') },
       { path: '/register', component: () => import('pages/Register.vue') },
-      { path: '/login', component: () => import('pages/Login.vue') }
+      { path: '/login', component: () => import('pages/Login.vue') },
+      { path: '/all_course', component: () => import('pages/AllCourse.vue') },
+      { path: '/purchased_course', component: () => import('pages/PurchaseCourse') },
+      { path: '/course_history', component: () => import('pages/CourseHistory') },
+      { path: '/appointment', component: () => import('pages/MyAppointment') }
+
     ]
   },
 
