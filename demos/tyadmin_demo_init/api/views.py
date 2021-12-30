@@ -71,6 +71,11 @@ def BuyCourse(request):
 
     customer = Customers.objects.get(id=user_id)
     course = Curriculums.objects.get(id=course_id)
+    if course.price * time > customer.balance:
+        return JsonResponse({
+            "status": 'error',
+            "message": "No sufficient balance",
+        })
     if Buys.objects.filter(customer=customer, course=course).exists():
         buy = Buys.objects.get(customer=customer, course=course)
         buy.course_left = buy.course_left + time
