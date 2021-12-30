@@ -13,12 +13,8 @@ export default {
     TableEquipment,
   },
   data(){
+    return {}
   },
-  methods:{
-    tryClick(){
-
-    }
-  }
 }
 </script>
 
