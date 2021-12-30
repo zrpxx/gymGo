@@ -66,12 +66,11 @@ import { api } from 'boot/axios'
 import { getCurrentInstance } from 'vue';
 
 const columns = [
-  {name: 'course_id', label: 'Course id', field: row => row.id, sortable: true, align: 'left',format: val => `${val}`},
-  {name: 'Name', label: 'Name', field: row => row.name, sortable: true, align: 'left', format: val => `${val}`},
+  {name: 'course_id', label: 'Course id', field: row => row.course_id, sortable: true, align: 'left',format: val => `${val}`},
+  {name: 'customer_id', label: 'Customer id', field: row => row.user_id, sortable: true, align: 'left',format: val => `${val}`},
   {name: 'Course_date', label: 'Course date', field: row => row.date, sortable: true, align: 'left', format: val => `${val}`},
-  {name: 'Coach', label: 'Coach', field: row => row.coach, sortable: true, align: 'left', format: val => `${val}`},
   {name: 'Evaluation', label: 'Evaluation from coach', field: row => row.des, sortable: true, align: 'left', format: val => `${val}`},
-  {name: 'Evaluation2', label: 'Evaluation of this course', field: row => row.score, sortable: true, align: 'left', format: val => `${val}`},
+  {name: 'Evaluation2', label: 'Evaluation of this course (stars)', field: row => row.score, sortable: true, align: 'left', format: val => `${val}`},
   {name: 'Action', label: 'Operate', field: 'Action', sortable: false, align: 'center'},
 ];
 
@@ -97,64 +96,38 @@ export default defineComponent({
     return {
       data: [
         {
-          id: 1,
-          name: 'Spinning bike I',
+          course_id: 1,
+          user_id:2,
           date: '2021-12-30-07:50',
-          coach: 'David Wang',
           des: 'Good',
           score: '5',
         },
         {
-          id: 2,
-          name: 'Spinning bike II',
-          date: '2021-12-31-17:50',
-          coach: 'David Li',
-          des: 'Bad',
-          score: '2',
-        },
-        {
-          id: 5,
-          name: 'Spinning bike III',
-          date: '2021-12-30-20:50',
-          coach: 'Li Wang',
+          course_id: 1,
+          user_id:2,
+          date: '2021-12-30-07:50',
           des: 'Good',
           score: '4',
-        }
+        },
+        {
+          course_id: 1,
+          user_id:2,
+          date: '2021-12-30-07:50',
+          des: 'Good',
+          score: '3',
+        },
       ]
     }
   },
   created() {
-    // const show_filter = ref(false)
-    // return {
-    //   filter: ref(''),
-    //   show_filter,
-    //   data,
-    //   columns,
-    //   prompt: ref(false),
-    //   quantity:0,
-    //   pagination: {
-    //     rowsPerPage: 10
-    //   }
-    // }
+
     this.request_data()
   },
   methods: {
     gkd() {
       let _this = this
       let flag = true
-      // if(flag){
-      //
-      //   Notify.create({
-      //     message: 'Purchase ' + _this.quantity+' course succeeded. ',
-      //     color: 'positive'
-      //   })
-      // }
-      // else{
-      //   Notify.create({
-      //     message: 'Purchase failed',
-      //     color: 'red'
-      //   })
-      // }
+
       api.post('',{
         customer: sessionStorage.getItem('user_id'),
         course: _this.courseId,
@@ -176,29 +149,42 @@ export default defineComponent({
     request_data()  {
       let _this = this
       let arr = []
-      api.get("").then(function (response) {
-        console.log(response)
-        let Res = response.data
-        let res = Res.data
-        for (let i = 0; i < res.length; i++) {
-          let item = {
-            id: 0,
-            name: "",
-            type: "",
-            price: 0,
-            coach: "",
-            description: ""
+      api.get("api/xadmin/v1/attends").then(function (response1) {
+
+        api.get("api/xadmin/v1/reviews",).then(function (response2){
+
+          //console.log(response1)
+          let Res = response1.data
+          let res = Res.data
+          let Res2 = response2
+          let res2 = Res2.data
+
+          for (let i = 0; i < res.length; i++) {
+            for (let j = 0; j < res2.length; j++) {
+              if(res[i].user_id === sessionStorage.getItem('user_id')){
+                let item = {
+                  course_id: 0,
+                  user_id: "",
+                  date: "",
+                  des: "",
+                  score: ""
+                }
+                item.course_id = res[i].course
+                item.name = res[i].name
+                item.date = res[i].course_date_time
+                item.coach = res[i].coach
+                item.description = res[i].description
+                if(res2[j].user_id === res[i].user_id){
+                  item.score = res2[j].score
+                }
+                arr.push(item)
+
+              }
+            }
           }
-          item.id = res[i].id
-          item.name = res[i].name
-          item.type = res[i].type
-          item.price = res[i].price
-          item.coach = res[i].coach
-          item.description = res[i].description
-          arr.push(item)
-        }
-        _this.data = arr
-        console.log(_this.data)
+          _this.data = arr
+          console.log(_this.data)
+        })
 
       }).catch(function (error) {
         Notify.create({
@@ -215,5 +201,3 @@ export default defineComponent({
 
 </style>
 
-
-name: "TableCourseHistory"

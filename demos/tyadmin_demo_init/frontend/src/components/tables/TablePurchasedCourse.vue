@@ -21,8 +21,8 @@
 
         <template v-slot:body-cell-Action="props">
           <q-td :props="props">
-            <q-btn icon="shopping_cart" size="sm" flat  @click="courseName= props.row.name ; courseId = props.row.name ;prompt = true" />
-            <q-btn icon="bookmark_add" size="sm" flat   />
+            <q-btn icon="shopping_cart" size="sm" flat  @click="courseName= props.row.name ; courseId = props.row.id ;prompt = true" />
+            <q-btn icon="bookmark_add" size="sm" flat   @click = "show_dialog();coachId = props.row.coachId"/>
 
           </q-td>
         </template>
@@ -69,7 +69,7 @@ import { getCurrentInstance } from 'vue';
 const columns = [
   {name: 'course_id', label: 'Course id', field: row => row.id, sortable: true, align: 'left',format: val => `${val}`},
   {name: 'Name', label: 'Name', field: row => row.name, sortable: true, align: 'left', format: val => `${val}`},
-  {name: 'Coach', label: 'Coach', field: row => row.coach, sortable: true, align: 'left', format: val => `${val}`},
+  {name: 'Coach_id', label: 'Coach id', field: row => row.coachId, sortable: true, align: 'left', format: val => `${val}`},
   {name: 'Remaining_course', label: 'Remaining course', field: row => row.remaining, sortable: true, align: 'left', format: val => `${val}`},
   {name: 'Action', label: 'Operate', field: 'Action', sortable: false, align: 'center'},
 ];
@@ -85,6 +85,7 @@ export default defineComponent({
       columns,
       prompt: ref(false),
       quantity:0,
+      coachId:0,
       courseName:'',
       courseId:0,
       pagination: {
@@ -121,15 +122,43 @@ export default defineComponent({
     this.request_data()
   },
   methods: {
+    request_agenda() {
+      let _this = this
+      api.get('/userapi/get_coach_agenda', {
+        params: {
+          'coach_id': _this.courseId
+        }
+      }).then(function (response) {
+
+      }).catch(function (error) {
+
+      })
+    },
     gkd() {
       let _this = this
+      let flag = true
 
-      api.post('/api/xadmin/v1/buys',{
-        customer: sessionStorage.getItem('user_id'),
-        course: _this.courseId,
-        course_left:_this.quantity
+      api.get('/userapi/buy_course',{
+        params: {
+          "user_id": sessionStorage.getItem('user_id'),
+          "course_id": _this.courseId,
+          "time":_this.quantity
+        }
+
       }).then(function (response){
         console.log('hihi' + response)
+        let res = response.data
+        if(res.status === 'ok'){
+          Notify.create({
+            message: "Buy course succeeded",
+            color: "positive"
+          })
+        }else{
+          Notify.create({
+            message: "Insufficient account balance",
+            color: "negative"
+          })
+        }
 
       }).catch(function (error){
         Notify.create({
@@ -145,29 +174,44 @@ export default defineComponent({
     request_data()  {
       let _this = this
       let arr = []
-      api.get("").then(function (response) {
+      api.get("/userapi/get_user_buy",{
+        params : {
+          "user_id" : sessionStorage.getItem('user_id')
+        }
+      }).then(function (response) {
         console.log(response)
         let Res = response.data
-        let res = Res.data
-        for (let i = 0; i < res.length; i++) {
-          let item = {
-            id: 0,
-            name: "",
-            coach: "",
-            remaining: 0
+        let resStatus = Res.status
+        let res = Res.buys
+        if(resStatus !== 'ok'){
+          Notify.create({
+            message: "Load error1",
+            color: "Negative"
+          })
+          console.log('status not ok')
+        }else{
+          console.log('status is ok')
+          for (let i = 0; i < res.length; i++) {
+            let item = {
+              id: 0,
+              name: "",
+              //coach: "",
+              remaining: ""
+
+            }
+            item.id = res[i].course_id
+            item.name = res[i].course_name
+            //item.coach = res[i].coach.username
+            item.remaining = res[i].course_left
+            arr.push(item)
           }
-          item.id = res[i].id
-          item.name = res[i].name
-          item.coach = res[i].coach
-          item.remaining = res[i].remaining
-          arr.push(item)
+          _this.data = arr
+          console.log(_this.data)
         }
-        _this.data = arr
-        console.log(_this.data)
 
       }).catch(function (error) {
         Notify.create({
-          message: "Load error",
+          message: "Load error2",
           color: "Negative"
         })
       })
