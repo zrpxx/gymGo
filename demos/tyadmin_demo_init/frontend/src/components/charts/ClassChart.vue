@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div style="width: 1400px">
     <q-card>
       <q-card-section class="text-h6"> Class Booking Chart </q-card-section>
       <q-card-section>
-        <div ref="areachart" id="areaChart" style="height: 100em"></div>
+        <div ref="areachart" id="areaChart" style="height: 600px"></div>
       </q-card-section>
       <q-resize-observer @resize="onResize" />
     </q-card>
@@ -15,29 +15,34 @@ import { api } from "src/boot/axios";
 const hours = ["8a", "10a", "12p", "2p", "4p", "6p", "8p", "10p"];
 // prettier-ignore
 const days = [
-  'Sunday', 'Saturday', 'Friday', 'Thursday',
-  'Wednesday', 'Tuesday', 'Monday'
+    'Sunday', 'Saturday', 'Friday', 'Thursday',
+    'Wednesday', 'Tuesday', 'Monday'
 ];
 
 export default {
   name: "AreaChart",
+  props: ["coach_id"],
   created() {
     api
-      .get("http://192.168.31.88:8000/userapi/get_coach_agenda?coach_id=1")
+      .get(
+        "http://192.168.31.88:8000/userapi/get_coach_agenda?coach_id=" +
+          this.coach_id
+      )
       .then((res) => {
         console.log(res.data);
-        let arr = res.data.result_pure;
+        let arr = res.data.result;
         console.log(arr);
         //use for loop to put it into 7*8 matrix
         let _this = this;
         let x = 0;
         let y = 0;
+        _this.start = arr[0].id;
         for (let i = 0; i < arr.length; i++) {
           //
-          if (arr[i] == -1) {
+          if (arr[i].status == -1) {
             _this.options.series[0].data.push([x, y, "-"]);
           } else {
-            _this.options.series[0].data.push([x, y, arr[i]]);
+            _this.options.series[0].data.push([x, y, arr[i].status]);
           }
           y++;
           if (y == 8) {
@@ -60,6 +65,7 @@ export default {
   data() {
     return {
       model: false,
+      start: 0,
       options: {
         gradientColor: ["white", "#40a070", "#e77c8e"],
         tooltip: {
@@ -139,7 +145,7 @@ export default {
       this.area_chart.setOption(this.options);
       this.area_chart.on("click", (params) => {
         console.log(params);
-        let index = params.data[0] * 8 + params.data[1] + 1;
+        let index = this.start + params.data[0] * 8 + params.data[1];
         console.log(index);
         if (params.data[2] == 2) {
           this.$q
@@ -157,14 +163,17 @@ export default {
             })
             .onCancel(() => {
               return;
-            }).onDismiss(() => {
-            return;
-          });
+            })
+            .onDismiss(() => {
+              return;
+            });
+          let user_id = sessionStorage.getItem("user_id");
           api
             .get(
               "http://192.168.31.88:8000/userapi/cancel_coach_agenda?agenda_id=" +
-              index +
-              "&user_id=3"
+                index +
+                "&user_id=" +
+                user_id
             )
             .then((res) => {
               console.log(res);
@@ -190,11 +199,14 @@ export default {
             .onDismiss(() => {
               return;
             });
+          let user_id = sessionStorage.getItem("user_id");
+
           api
             .get(
               "http://192.168.31.88:8000/userapi/set_coach_agenda?agenda_id=" +
-              index +
-              "&user_id=3"
+                index +
+                "&user_id=" +
+                user_id
             )
             .then((res) => {
               console.log(res);
