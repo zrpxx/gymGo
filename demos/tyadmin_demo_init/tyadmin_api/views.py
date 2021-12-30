@@ -3,12 +3,13 @@ from django.contrib.auth.hashers import make_password
 from django.shortcuts import render
 from django.views import View
 from rest_framework.views import APIView
-
+from django.contrib.auth.decorators import login_required
 from tyadmin_api_cli.contants import SYS_LABELS
 from tyadmin_api.custom import XadminViewSet, custom_exception_handler
 from tyadmin_api.filters import TyAdminSysLogFilter, TyAdminEmailVerifyRecordFilter
 from tyadmin_api.models import TyAdminSysLog, TyAdminEmailVerifyRecord
 from tyadmin_api.serializers import TyAdminSysLogSerializer, TyAdminEmailVerifyRecordSerializer, SysUserChangePasswordSerializer
+from api.models import User
 
 
 class TyAdminSysLogViewSet(XadminViewSet):
@@ -63,9 +64,30 @@ class RichUploadSerializer(serializers.Serializer):
 SysUser = get_user_model()
 
 
+def is_superadmin(user):
+    return user.groups.filter(name="superadmin").exists()
+
+
+def is_coach(user):
+    return user.groups.filter(name="coach").exists()
+
+
+def is_maintainer(user):
+    return user.groups.filter(name="maintainer").exists()
+
+
 class MenuView(views.APIView):
     def get(self, request, *args, **kwargs):
-        data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/menu.json')
+        # content = json.loads(request.body)
+        # uid = content['id']
+        user = User.objects.get(id=1)
+        if is_superadmin(user):
+            data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/menu.json')
+        elif is_coach(user):
+            data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/coach_menu.json')
+        else:
+            data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/maintainer_menu.json')
+        # data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/menu.json')
         with open(data_json, encoding='utf-8') as fr:
             content = fr.read()
         import demjson
@@ -99,8 +121,9 @@ class LoginView(MtyCustomExecView):
             pic_captcha = request.data["pic_captcha"]
             key = request.data["key"]
             try:
-                captcha = CaptchaStore.objects.get(challenge=pic_captcha.upper(), hashkey=key)
-                captcha.delete()
+                pass
+                # captcha = CaptchaStore.objects.get(challenge=pic_captcha.upper(), hashkey=key)
+                # captcha.delete()
             except CaptchaStore.DoesNotExist:
                 raise ValidationError({"pic_captcha": ["验证码不正确"]})
             user = authenticate(request, username=request.data["userName"], password=request.data["password"])

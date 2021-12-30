@@ -1,0 +1,40 @@
+[
+    {
+        name: 'Home',
+        path: '/xadmin/index',
+        icon: 'dashboard',
+        component: './TyAdminBuiltIn/DashBoard'
+    },
+    {
+        path: '/xadmin/',
+        redirect: '/xadmin/index',
+    },
+    {
+        name: 'Api',
+        icon: 'BarsOutlined',
+        path: '/xadmin/api',
+        routes:
+        [
+            {
+                name: '日程管理',
+                path: '/xadmin/api/agendas',
+                component: './AutoGenPage/AgendasList',
+            },
+            {
+                name: '课程管理',
+                path: '/xadmin/api/curriculums',
+                component: './AutoGenPage/CurriculumsList',
+            },
+            {
+                name: '课程参加记录管理',
+                path: '/xadmin/api/attends',
+                component: './AutoGenPage/AttendsList',
+            },
+            {
+                name: '教练日程预约',
+                path: '/xadmin/api/reserve_agenda',
+                component: './AutoGenPage/ReserveAgendaList',
+            }
+        ]
+    }
+]
