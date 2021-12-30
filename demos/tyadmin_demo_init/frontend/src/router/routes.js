@@ -4,9 +4,8 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') },
       { path: '/register', component: () => import('pages/Register.vue') },
-      { path: '/login', component: () => import('pages/Login.vue') },
+      { path: '', component: () => import('pages/Login.vue') },
       { path: '/all_course', component: () => import('pages/AllCourse.vue') },
       { path: '/purchased_course', component: () => import('pages/PurchaseCourse') },
       { path: '/course_history', component: () => import('pages/CourseHistory') },
@@ -19,7 +18,7 @@ const routes = [
       { path: '/zone', component: () => import('pages/Zone.vue') },
       { path: '/class', component: () => import('pages/Class.vue') },
       { path: '/locker', component: () => import('pages/Locker.vue') },
-      
+
 
     ]
   },

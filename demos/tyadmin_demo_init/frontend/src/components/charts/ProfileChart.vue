@@ -98,7 +98,7 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: ['1', '2', '3', '4', '5', '6', '7']
+          data: ['1', '2', '3', '4', '5', '6', '7', '8']
         },
         yAxis: {
           type: 'value'
@@ -149,12 +149,14 @@ export default {
   },
   methods: {
     init() {
+
+      console.log(this.options)
       let lineChart = document.getElementById('lineChart');
       echarts.dispose(lineChart);
-      this.request_body_data()
       let theme = this.model ? 'dark' : 'light';
       this.line_chart = echarts.init(lineChart, theme);
-      this.line_chart.setOption(this.options)
+      this.request_body_data()
+      // this.line_chart.setOption(this.options)
     },
     onResize() {
       if (this.line_chart) {
@@ -162,40 +164,9 @@ export default {
       }
     },
 
-    tryConfirm(){
-      let _this=this
-      let arr = []
-      this.$api.post('/api/xadmin/v1/equipment').then(function (response) {
-        console.log(response)
-        let res=response.data.data
-        console.log(res)
-        for(let i=0;i<res.length;i++){
-          let item ={
-            equipment_id:0,
-            Equipment_photo:"",
-            Equipment_name:"",
-            Equipment_status:""
-          }
-          item.equipment_id=res[i].id
-          item.Equipment_photo=res[i].image
-          item.Equipment_name=res[i].name
-          item.Equipment_status=res[i].status
-          sessionStorage.setItem('equipment_id',res[i].id)
-          arr.push(item)
-        }
-        _this.data = arr
-        console.log(_this.data)
-      }).catch(function (error) {
-        Notify.create({
-          message:""
-        })
-        console.log(error)
-      })
-    },
-
     record_body_data() {
       let _this=this
-      let uid = _this.sessionStorage.getItem('user_id')
+      let uid = sessionStorage.getItem('user_id')
       this.$api.get('/userapi/record_body_data', {
         params: {
           user_id: uid,
@@ -220,15 +191,17 @@ export default {
         console.log(error)
       })
     },
+
     request_body_data(){
       let _this=this
       let arr = []
-      let uid = _this.sessionStorage.getItem('user_id')
+      let uid = sessionStorage.getItem('user_id')
       this.$api.get('/userapi/get_profile', {
         params: {
           user_id: uid
         }
       }).then(function (response) {
+        console.log(response)
         let res=response.data
         let body_data_set = res.body_data
         let height_list = []
@@ -274,6 +247,11 @@ export default {
           stack: 'Total',
           data: bmi_list
         })
+        _this.options.xAxis.data = []
+        for (let i = 0; i < body_data_set.length; i++) {
+          _this.options.xAxis.data.push((i+1).toString())
+        }
+        _this.line_chart.setOption(_this.options)
       }).catch(function (error) {
         Notify.create({
           message:""

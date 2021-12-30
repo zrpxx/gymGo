@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 import json
 from api.models import Agendas, Attends, User, Customers, Equipment, ReserveEquipment, Lockers, Buys, Curriculums, Zones, \
-    ReserveAgenda, BodyData, ArchiveBodyData, Bills
+    ReserveAgenda, BodyData, ArchiveBodyData, Bills, Reviews
 
 from django.utils.timezone import now
 
@@ -28,14 +28,29 @@ def getUserAttend(request):
     user = Customers.objects.get(id=user_id)
     result = []
     for attend in Attends.objects.filter(customer=user):
-        result.append({
-            "id": attend.id,
-            "course_id": attend.course.id,
-            "course_name": attend.course.name,
-            "course_date_time": attend.course_date_time,
-            "coach_id": attend.course.coach.id,
-            "coach_description": attend.description,
-        })
+        if Reviews.objects.filter(attend_course=attend).exists():
+            review = Reviews.objects.get(attend_course=attend)
+            result.append({
+                "id": attend.id,
+                "course_id": attend.course.id,
+                "course_name": attend.course.name,
+                "course_date_time": attend.course_date_time,
+                "coach_id": attend.course.coach.id,
+                "coach_description": attend.description,
+                "rating": review.rating,
+                "review": review.review_text
+            })
+        else:
+            result.append({
+                "id": attend.id,
+                "course_id": attend.course.id,
+                "course_name": attend.course.name,
+                "course_date_time": attend.course_date_time,
+                "coach_id": attend.course.coach.id,
+                "coach_description": attend.description,
+                "rating": -1,
+                "review": "N/A"
+            })
     return JsonResponse({
         "status": 'ok',
         "data": result
