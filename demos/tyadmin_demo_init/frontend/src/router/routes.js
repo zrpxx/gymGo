@@ -19,6 +19,7 @@ const routes = [
       { path: '/zone', component: () => import('pages/Zone.vue') },
       { path: '/class', component: () => import('pages/Class.vue') },
       { path: '/locker', component: () => import('pages/Locker.vue') },
+      
 
     ]
   },
