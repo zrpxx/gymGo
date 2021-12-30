@@ -156,7 +156,9 @@ export default {
               persistent: true,
             })
             .onOk(() => {
-              // console.log('>>>> OK')
+              setTimeout(() => {
+                this.$router.go("0");
+              }, 1000);
             })
             .onOk(() => {
               // console.log('>>>> second OK catcher')
@@ -188,7 +190,9 @@ export default {
               persistent: true,
             })
             .onOk(() => {
-              // console.log('>>>> OK')
+              setTimeout(() => {
+                this.$router.go("0");
+              }, 1000);
             })
             .onOk(() => {
               // console.log('>>>> second OK catcher')
