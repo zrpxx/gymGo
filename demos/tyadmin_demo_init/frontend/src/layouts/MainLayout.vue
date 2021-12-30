@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+    <q-header elevated v-if="this.$router.path !== '/' && this.$router.path !== '/register'">
       <q-toolbar>
         <q-btn
           flat
@@ -67,13 +67,13 @@
           label="Equipment"
         >
           <q-list class="q-pl-lg">
-            <q-item to="" active-class="q-item-no-link-highlighting">
+            <q-item to="equipment" active-class="q-item-no-link-highlighting">
 
               <q-item-section>
                 <q-item-label>All equipment</q-item-label>
               </q-item-section>
             </q-item>
-            <q-item to="/MapMarker" active-class="q-item-no-link-highlighting">
+            <q-item to="/booked_equipment" active-class="q-item-no-link-highlighting">
 
               <q-item-section>
                 <q-item-label>My booked</q-item-label>
@@ -99,7 +99,7 @@
             <q-item-label>Zone</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item to="/Dashboard2" active-class="q-item-no-link-highlighting">
+        <q-item to="/profile" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
             <q-icon name="person"/>
           </q-item-section>
