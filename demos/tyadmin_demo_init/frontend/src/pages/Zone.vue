@@ -10,7 +10,7 @@
     <q-btn
       class="col-1"
       @click="clickTo"
-      label="Submit"
+      label="前往"
       type="submit"
       color="primary"
     />
@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import { Notify } from "quasar";
+
 import { api } from "src/boot/axios";
 import { defineComponent, defineAsyncComponent } from "vue";
 export default defineComponent({
@@ -45,37 +47,65 @@ export default defineComponent({
   },
   methods: {
     clickTo() {
+      setTimeout(() => {
+        this.$router.go("0");
+      }, 2000);
+      this.$q
+        .dialog({
+          title: "Confirm",
+          message: "Are sure to enter this zone?",
+          cancel: true,
+          persistent: true,
+        })
+        .onOk(() => {
+          setTimeout(() => {}, 100);
+        })
+        .onCancel(() => {
+          return;
+        })
+        .onDismiss(() => {
+          return;
+        });
       if (this.model === "") {
         Notify.create({
           type: "negative",
           icon: "warning",
           message: "请选择区域",
-          position: "top-right",
+          position: "bottom",
           timeout: 2000,
         });
       } else if (this.model === "离开") {
         let user_id = sessionStorage.getItem("user_id");
-
         api
           .get("http://192.168.31.88:8000/userapi/leave?user_id=" + user_id)
-          .then((res) => {
-            if (res.data.code == 200) {
-              Notify.create({
-                type: "positive",
-                icon: "check_circle",
-                message: "离开成功",
-                position: "top-right",
-                timeout: 2000,
-              });
-            } else {
-              Notify.create({
-                type: "negative",
-                icon: "warning",
-                message: "离开失败",
-                position: "top-right",
-                timeout: 2000,
-              });
-            }
+          .then(() => {
+            // if (res.data.code == 200) {
+            //   Notify.create({
+            //     type: "positive",
+            //     icon: "check_circle",
+            //     message: "离开成功",
+            //     position: "bottom",
+            //     timeout: 2000,
+            //   });
+            // } else {
+            //   Notify.create({
+            //     type: "negative",
+            //     icon: "warning",
+            //     message: "离开失败",
+            //     position: "bottom",
+            //     timeout: 2000,
+            //   });
+            // }
+          })
+          .catch((err) => {
+            Notify.create({
+              type: "negative",
+              icon: "warning",
+              message: "离开失败",
+              position: "bottom",
+              timeout: 2000,
+            });
+            console.log(err);
           });
       } else {
         api

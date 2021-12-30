@@ -33,10 +33,13 @@ export default {
         let _this = this;
         let x = 0;
         let y = 0;
+        let user_id = sessionStorage.getItem("user_id");
+
         for (let i = 0; i < _this.lockers.length; i++) {
           //
+
           if (
-            this.lockers[i].occupied_by.id == 3 &&
+            this.lockers[i].occupied_by.id == user_id &&
             this.lockers[i].status == 2
           ) {
             _this.options.series[0].data.push([x, y, 3]);
@@ -192,10 +195,20 @@ export default {
                 persistent: true,
               })
               .onOk(() => {
-                // console.log('>>>> OK')
-              })
-              .onOk(() => {
-                // console.log('>>>> second OK catcher')
+                api
+                  .get(
+                    "http://192.168.31.88:8000/userapi/occupy_locker?user_id=" +
+                      user_id +
+                      "&" +
+                      "locker_id=" +
+                      index
+                  )
+                  .then((res) => {
+                    this.$router.go("0");
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
               })
               .onCancel(() => {
                 return;
@@ -204,18 +217,6 @@ export default {
                 return;
               });
             this.occupied_by = true;
-            api
-              .get(
-                "http://192.168.31.88:8000/userapi/occupy_locker?user_id=" +
-                  user_id +
-                  "&" +
-                  "locker_id=" +
-                  index
-              )
-              .then((res) => {})
-              .catch((err) => {
-                console.log(err);
-              });
           } else if (params.data[2] == 3) {
             this.$q
               .dialog({
@@ -225,7 +226,17 @@ export default {
                 persistent: true,
               })
               .onOk(() => {
-                // console.log('>>>> OK')
+                api
+                  .get(
+                    "http://192.168.31.88:8000/userapi/free_locker?user_id=" +
+                      user_id
+                  )
+                  .then((res) => {
+                    this.$router.go("0");
+                  });
+              })
+              .catch((err) => {
+                console.log(err);
               })
               .onOk(() => {
                 // console.log('>>>> second OK catcher')
@@ -241,15 +252,6 @@ export default {
             console.log(
               "http://192.168.31.88:8000/userapi/free_locker?user_id=" + user_id
             );
-            api
-              .get(
-                "http://192.168.31.88:8000/userapi/free_locker?user_id=" +
-                  user_id
-              )
-              .then((res) => {})
-              .catch((err) => {
-                console.log(err);
-              });
           }
         });
     },

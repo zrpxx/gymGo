@@ -46,6 +46,9 @@
               <div>
                 <q-btn class="register" label="Register" type="button" color="primary" @click="tryRegister"/>
               </div>
+              <div>
+                <q-btn class="back" label="Back" type="button" color="primary" to="/"/>
+              </div>
             </q-form>
           </q-card-section>
         </q-card>
@@ -116,6 +119,9 @@ export default {
   background-image: linear-gradient(135deg, #7028e4 0%, #e5b2ca 100%);
 }
 .register{
+  width: 100%;
+}
+.back{
   width: 100%;
 }
 </style>

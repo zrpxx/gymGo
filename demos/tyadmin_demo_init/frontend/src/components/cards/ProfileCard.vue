@@ -35,7 +35,6 @@
 
           </q-item>
         </div>
-
         <div class="col-md-3 col-sm-12 col-xs-12">
           <q-item :style="`background-color:#3a9688`" class="q-pa-none">
             <q-item-section class=" q-pa-md q-ml-none  text-white">
@@ -83,6 +82,10 @@ import {defineComponent} from 'vue'
 export default defineComponent({
   name: "ProfileCard",
   props: ['username', 'level', 'recharge', 'balance']
+  data(){
+    return{
+    }
+  }
 })
 </script>
 
