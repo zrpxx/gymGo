@@ -1399,7 +1399,7 @@
 
 "@vue/composition-api@^1.4.3":
   version "1.4.3"
-  resolved "https://registry.npmmirror.com/@vue/composition-api/download/@vue/composition-api-1.4.3.tgz"
+  resolved "https://registry.npmmirror.com/@vue/composition-api/download/@vue/composition-api-1.4.3.tgz#c80eb8c692e16ebfcdab4af5344a6e3ff8ccc38e"
   integrity sha512-Qp4rMbESO05/7/Imck027X5lPhbmMX/mtYSDvIMJ14PS4KHY/4GllnQbPEfsBEe1LECFE6HWx2k7HYgcuYNvpg==
   dependencies:
     tslib "^2.3.1"
@@ -5945,6 +5945,7 @@ vary@^1.1.2, vary@~1.1.2:
 
 vue-demi@^0.11.2:
   version "0.11.4"
+
   resolved "https://registry.npmmirror.com/vue-demi/download/vue-demi-0.11.4.tgz"
   integrity sha1-YQGZL+RyTPVjQBihbpU/MFLpTio=
 

@@ -56,6 +56,8 @@
 
 <script>
 
+import {Notify} from "quasar";
+
 export default {
   data () {
     return {
@@ -66,13 +68,43 @@ export default {
   },
   methods:{
     tryRegister(){
-      this.$api.post('',{
-        username:this.username,
-        password:this.password
+      let _this=this
+      this.$api.get('/userapi/register',{
+        params: {
+          username:this.username,
+          password:this.password
+        }
       }).then(function (response) {
         console.log(response)
+        console.log(response)
+        let res = response.data
+        if(res.status === "ok") {
+          Notify.create(
+            {
+              type: 'positive',
+              message: 'Success'
+            })
+          _this.$router.push("/")
+        }else if (res.status === "Failed" && res.message === "User exist") {
+          Notify.create(
+            {
+              type: 'negative',
+              message: 'User exist'
+            })
+        } else{
+          Notify.create(
+            {
+              type: 'negative',
+              message: 'error'
+            })
+        }
       }).catch(function (error) {
           console.log(error)
+        Notify.create(
+          {
+            type: 'negative',
+            message: '内部错误'
+          })
       })
     }
   }
