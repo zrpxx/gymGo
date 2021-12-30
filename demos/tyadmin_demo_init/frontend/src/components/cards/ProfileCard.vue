@@ -35,7 +35,6 @@
 
           </q-item>
         </div>
-
         <div v-for="(item, index) in items" :key="index" class="col-md-3 col-sm-12 col-xs-12">
           <q-item :style="`background-color:#3a9688`" class="q-pa-none">
             <q-item-section class=" q-pa-md q-ml-none  text-white">
@@ -98,29 +97,6 @@ export default defineComponent({
         ]
     }
   },
-  created() {
-    this.getProfile()
-  },
-  methods:{
-    getProfile(){
-      let _this=this
-      let uid =sessionStorage.getItem('user_id')
-      this.$api.get('/api/xadmin/v1/profile',{
-        user_id:uid
-      }).then(function (response){
-        console.log(response)
-        let res=response.data
-        let item;
-        item.balance=res.balance
-        item.recharge=res.recharge
-        item.level=res.level
-        item.username=res.username
-        _this.items=item
-      }).catch(function (error){
-        console.log(error)
-      })
-    }
-  }
 })
 </script>
 

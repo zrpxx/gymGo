@@ -2,7 +2,7 @@
   <q-card>
     <q-card-section class="text-center">
       <q-avatar size="10px" className="shadow-5" class="photo">
-        <img :src="Equipment_photo">
+        <img :src="Equipment_photo" class="im">
       </q-avatar>
     </q-card-section>
 
@@ -27,7 +27,6 @@
     <q-separator />
 
     <q-card-actions>
-      <q-btn flat round icon="event" />
       <q-btn flat color="primary" size="20px" @click="tryBook">
         Book
       </q-btn>
@@ -42,7 +41,7 @@ import { LocalStorage, SessionStorage } from 'quasar'
 
 export default defineComponent({
   name: "CardEquipment",
-  props: ['Equipment_photo', 'Equipment_name', 'Equipment_status'],
+  props: ['id','Equipment_photo', 'Equipment_name', 'Equipment_status'],
   date(){
    return{
 
@@ -51,30 +50,31 @@ export default defineComponent({
   methods:{
     tryBook() {
       let _this=this
-      let arr = []
-      let id=sessionStorage.getItem(equipment_id)
-      console.log(equipment_id)
-      this.$api.post('/api/xadmin/v1/book_equipment',{
-        id:id
+      let uid =sessionStorage.getItem('user_id')
+      console.log(uid)
+      console.log(_this.id + "   my id")
+      this.$api.get('/userapi/reserve_equipment',{
+        params: {
+          user_id: uid,
+          equipment_id:_this.id
+
+        }
       }).then(function (response) {
         console.log(response)
-        let res=response.data.data
-        if(res.status=="1"){
+        let res=response.data
+        if(res.status==="ok"){
+          console.log("hello")
+          _this.$router.go(0)
           Notify.create({
-            message:"success"
-          })
-        }else if(res.status=="2"){
-          Notify.create({
-            message:"Already used"
-          })
-        }else if(res.status=="3"){
-          Notify.create({
-            message:"Already booked"
+            type: 'active',
+            message: 'success'
           })
 
-        }else if(res.status=="4"){
+        }else if(res.status==="error"){
+          console.log("hhhh")
           Notify.create({
-            message:"broken"
+            type: 'negative',
+            message: 'Equipment has been reserved'
           })
         }
       }).catch(function (error) {
@@ -83,13 +83,15 @@ export default defineComponent({
         })
         console.log(error)
       })
-    }
+    },
   }
 })
 
 </script>
 
 <style scoped>
-
+.im{
+  max-height:200px ;
+}
 </style>
 
