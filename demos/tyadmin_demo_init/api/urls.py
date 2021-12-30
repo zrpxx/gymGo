@@ -17,7 +17,6 @@ urlpatterns = [
     path('free_locker', views.freeLocker),
     path('enter_zone', views.enterZone),
     path('leave', views.leaveZone),
-  
     path('get_user_buy', views.getUserBuy),
     path('get_coach_agenda', views.getCoachAgenda),
     path('set_coach_agenda', views.setCoachAgenda),
@@ -25,6 +24,7 @@ urlpatterns = [
     path('flush_agenda', views.FlushAgenda),
     path('deposit', views.deposit),
     path('get_profile', views.getProfile),
-    path('record_body_data', views.recordBodyData)
+    path('record_body_data', views.recordBodyData),
+    path('get_user_attend', views.getUserAttend),
 ]
 

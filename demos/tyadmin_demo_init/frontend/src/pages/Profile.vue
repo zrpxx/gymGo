@@ -1,7 +1,12 @@
 <template>
   <q-page class="q-pa-sm">
 
-    <profile-card />
+    <profile-card
+      :balance="balance"
+      :level="level"
+      :recharge="recharge"
+      :username="name"
+    />
 
     <q-space />
 
@@ -12,9 +17,10 @@
 </template>
 
 <script>
-import {defineComponent,defineAsyncComponent} from 'vue'
+import {defineComponent} from 'vue'
 import ProfileCard from "components/cards/ProfileCard";
 import ProfileChart from "components/charts/ProfileChart";
+import {api} from "boot/axios";
 
 export default defineComponent({
   name: 'PageIndex',
@@ -24,6 +30,29 @@ export default defineComponent({
   },
   setup() {
     return {}
+  },
+  data() {
+    return {
+      balance: 0,
+      level: 0,
+      recharge: 0,
+      username: ''
+    }
+  },
+  created() {
+    let user_id = sessionStorage.getItem('user_id')
+    if(user_id)
+      api.get('/userapi/get_profile', {
+        params: {
+          user_id: user_id
+        }
+      }).then(res => {
+        let data = res.data
+        this.balance = data.balance
+        this.recharge = data.total_charge
+        this.level = data.vip_level
+        this.name = data.username
+      })
   }
 
 })

@@ -33,18 +33,7 @@
     >
       <q-list class="q-mt-xl">
         <!--        预约-->
-        <q-item
-          class="q-my-sm"
-          to=""
-          active-class="q-item-no-link-highlighting"
-        >
-          <q-item-section avatar>
-            <q-icon name="date_range" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Agenda</q-item-label>
-          </q-item-section>
-        </q-item>
+
 
         <!--  课程      -->
         <q-expansion-item
@@ -73,15 +62,6 @@
             >
               <q-item-section>
                 <q-item-label>History</q-item-label>
-              </q-item-section>
-            </q-item>
-
-            <q-item
-              to="/appointment"
-              active-class="q-item-no-link-highlighting"
-            >
-              <q-item-section>
-                <q-item-label>Appointment</q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
@@ -140,8 +120,21 @@
             <q-item-label>Profile</q-item-label>
           </q-item-section>
         </q-item>
+        <q-item
+          class="q-my-sm"
+          to="/"
+          active-class="q-item-no-link-highlighting"
+        >
+          <q-item-section avatar>
+            <q-icon name="logout" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Logout</q-item-label>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
+
 
     <q-page-container class="bg-grey-2">
       <router-view />

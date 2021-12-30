@@ -53,7 +53,7 @@
               label="BMI"
             />
             <div>
-              <q-btn class="login" label="Confirm" type="button" color="primary" @click="tryConfirm"/>
+              <q-btn class="login" label="Confirm" type="button" color="primary" @click="record_body_data()"/>
             </div>
           </q-form>
         </q-card-section>
@@ -98,7 +98,7 @@ export default {
         xAxis: {
           type: 'category',
           boundaryGap: false,
-          data: ['1', '2', '3', '4', '5', '6', '7']
+          data: ['1', '2', '3', '4', '5', '6', '7', '8']
         },
         yAxis: {
           type: 'value'
@@ -149,48 +149,115 @@ export default {
   },
   methods: {
     init() {
+
+      console.log(this.options)
       let lineChart = document.getElementById('lineChart');
       echarts.dispose(lineChart);
       let theme = this.model ? 'dark' : 'light';
       this.line_chart = echarts.init(lineChart, theme);
-      this.line_chart.setOption(this.options)
+      this.request_body_data()
+      // this.line_chart.setOption(this.options)
     },
     onResize() {
       if (this.line_chart) {
-        this.line_chart.resize();
+        // this.line_chart.resize();
       }
     },
 
-    tryConfirm(){
+    record_body_data() {
+      let _this=this
+      let uid = sessionStorage.getItem('user_id')
+      this.$api.get('/userapi/record_body_data', {
+        params: {
+          user_id: uid,
+          height: _this.height,
+          weight: _this.weight,
+          fat: _this.fat,
+          muscle: _this.muscle,
+          bmi: _this.bmi,
+        }
+      }).then(function (response) {
+        let res=response.data
+        if (res.status === "ok") {
+          Notify.create({
+            type: "positive",
+            message:"record successful"
+          })
+        }
+      }).catch(function (error) {
+        Notify.create({
+          message:"error"
+        })
+        console.log(error)
+      })
+    },
+
+    request_body_data(){
       let _this=this
       let arr = []
-      this.$api.post('/api/xadmin/v1/equipment').then(function (response) {
-        console.log(response)
-        let res=response.data.data
-        console.log(res)
-        for(let i=0;i<res.length;i++){
-          let item ={
-            equipment_id:0,
-            Equipment_photo:"",
-            Equipment_name:"",
-            Equipment_status:""
-          }
-          item.equipment_id=res[i].id
-          item.Equipment_photo=res[i].image
-          item.Equipment_name=res[i].name
-          item.Equipment_status=res[i].status
-          sessionStorage.setItem('equipment_id',res[i].id)
-          arr.push(item)
+      let uid = sessionStorage.getItem('user_id')
+      this.$api.get('/userapi/get_profile', {
+        params: {
+          user_id: uid
         }
-        _this.data = arr
-        console.log(_this.data)
+      }).then(function (response) {
+        console.log(response)
+        let res=response.data
+        let body_data_set = res.body_data
+        let height_list = []
+        let weight_list = []
+        let fat_list = []
+        let muscle_list = []
+        let bmi_list = []
+        for(let i=0;i<body_data_set.length;i++){
+          height_list.push(body_data_set[i].height)
+          weight_list.push(body_data_set[i].weight)
+          fat_list.push(body_data_set[i].fat)
+          muscle_list.push(body_data_set[i].muscle)
+          bmi_list.push(body_data_set[i].bmi)
+        }
+        _this.options.series = []
+        _this.options.series.push({
+          name: 'height',
+          type: 'line',
+          stack: 'Total',
+          data: height_list
+        })
+        _this.options.series.push({
+          name: 'weight',
+          type: 'line',
+          stack: 'Total',
+          data: weight_list
+        })
+        _this.options.series.push({
+          name: 'fat',
+          type: 'line',
+          stack: 'Total',
+          data: fat_list
+        })
+        _this.options.series.push({
+          name: 'muscle',
+          type: 'line',
+          stack: 'Total',
+          data: muscle_list
+        })
+        _this.options.series.push({
+          name: 'bmi',
+          type: 'line',
+          stack: 'Total',
+          data: bmi_list
+        })
+        _this.options.xAxis.data = []
+        for (let i = 0; i < body_data_set.length; i++) {
+          _this.options.xAxis.data.push((i+1).toString())
+        }
+        _this.line_chart.setOption(_this.options)
       }).catch(function (error) {
         Notify.create({
           message:""
         })
         console.log(error)
       })
-
     }
   }
 }

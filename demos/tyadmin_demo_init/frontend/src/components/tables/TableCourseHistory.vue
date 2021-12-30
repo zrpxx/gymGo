@@ -7,7 +7,6 @@
         :columns="columns"
         row-key="name"
         :filter="filter"
-        hide-bottom
         v-model:pagination="pagination">
         <template v-slot:top-right>
           <q-input v-if="show_filter" filled borderless dense debounce="300" v-model="filter" placeholder="Search">
@@ -21,8 +20,7 @@
 
         <template v-slot:body-cell-Action="props">
           <q-td :props="props">
-            <q-btn icon="edit" size="sm" flat dense @click="courseName= props.row.name ; courseId = props.row.name ;prompt = true" />
-
+            <q-btn icon="edit" :disable="props.row.rating !== -1" size="sm" flat dense @click="show_review_dialog(props.row.id)" />
           </q-td>
         </template>
 
@@ -34,26 +32,35 @@
   <q-dialog v-model="prompt" persistent>
     <q-card style="min-width: 350px">
       <q-card-section>
-        <div class="text-h6">Input quantity you want to purchase</div>
+        <div class="text-h6">Add review of attendance # {{ review_id }}</div>
       </q-card-section>
 
       <q-card-section class="q-pt-none">
         <!--        <q-input dense v-model="quantity" autofocus @keyup.enter="prompt = false" />-->
         <div class="q-pa-md">
           <q-input
-            v-model.number="score"
+            v-model.number="star"
+            placeholder="Stars (1-5)"
             type="number"
             filled
             style="max-width: 200px"
             :rules="[val => 1<=val<=5 || 'The score must between 1 and 5']"
-            autofocus @keyup.enter="prompt = false"
+            autofocus
+          />
+          <q-input
+            v-model="review_text"
+            placeholder="Your review text"
+            filled
+            style="max-width: 200px"
+            required
+            autofocus
           />
         </div>
       </q-card-section>
 
       <q-card-actions align="right" class="text-primary">
         <q-btn flat label="Cancel" v-close-popup />
-        <q-btn flat label="submit" @click="gkd()" />
+        <q-btn flat label="submit" @click="submit_review()" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -66,130 +73,89 @@ import { api } from 'boot/axios'
 import { getCurrentInstance } from 'vue';
 
 const columns = [
-  {name: 'course_id', label: 'Course id', field: row => row.course_id, sortable: true, align: 'left',format: val => `${val}`},
-  {name: 'customer_id', label: 'Customer id', field: row => row.user_id, sortable: true, align: 'left',format: val => `${val}`},
-  {name: 'Course_date', label: 'Course date', field: row => row.date, sortable: true, align: 'left', format: val => `${val}`},
-  {name: 'Evaluation', label: 'Evaluation from coach', field: row => row.des, sortable: true, align: 'left', format: val => `${val}`},
-  {name: 'Evaluation2', label: 'Evaluation of this course (stars)', field: row => row.score, sortable: true, align: 'left', format: val => `${val}`},
-  {name: 'Action', label: 'Operate', field: 'Action', sortable: false, align: 'center'},
+  {name: 'id', label: 'ID', field: row => row.id, sortable: false},
+  {name: 'course_id', label: 'Course id', field: row => row.course_id, sortable: false, align: 'left',format: val => `${val}`},
+  {name: 'coach_id', label: 'Coach id', field: row => row.coach_id, sortable: false, align: 'left',format: val => `${val}`},
+  {name: 'Course_date', label: 'Course date', field: row => row.course_date_time, sortable: false, align: 'left', format: val => `${val}`},
+  {name: 'Coach desc', label: 'Coach description', field: row => row.coach_description, sortable: false, align: 'left', format: val => `${val}`},
+  {name: 'rating', label: 'Customer rating (stars)', field: row => row.rating, sortable: false, align: 'left', format: val => val === -1 ? 'N/A' : `${val}`},
+  {name: 'review', label: 'Review', field: row => row.review, sortable: false, align: 'center'},
+  {name: 'Action', label: 'Action', field: row => row.action, sortable: false, align: 'center'}
 ];
 
 export default defineComponent({
   name: "TableAllCourse",
   setup() {
     const show_filter = ref(false)
-    let {ctx: that} = getCurrentInstance()
     return {
       filter: ref(''),
       show_filter,
       columns,
-      prompt: ref(false),
-      score:0,
-      courseName:'',
-      courseId:0,
       pagination: {
-        rowsPerPage: 10
+        rowsPerPage: 20
       },
     }
   },
-  data: function (){
+  data() {
     return {
-      data: [
-        {
-          course_id: 1,
-          user_id:2,
-          date: '2021-12-30-07:50',
-          des: 'Good',
-          score: '5',
-        },
-        {
-          course_id: 1,
-          user_id:2,
-          date: '2021-12-30-07:50',
-          des: 'Good',
-          score: '4',
-        },
-        {
-          course_id: 1,
-          user_id:2,
-          date: '2021-12-30-07:50',
-          des: 'Good',
-          score: '3',
-        },
-      ]
+      data: [],
+      review_id: -1,
+      star: null,
+      review_text: "",
+      prompt: false
     }
   },
   created() {
-
-    this.request_data()
+    api.get('/userapi/get_user_attend', {
+      params: {
+        user_id: sessionStorage.getItem('user_id')
+      }
+    }).then(res => {
+      console.log(res)
+      this.data = res.data.data
+    })
   },
   methods: {
-    gkd() {
-      let _this = this
-      let flag = true
-
-      api.post('',{
-        customer: sessionStorage.getItem('user_id'),
-        course: _this.courseId,
-        course_left:_this.score
-      }).then(function (response){
-        console.log('hihi' + response)
-
-      }).catch(function (error){
-        Notify.create({
-          message: "Load error",
-          color: "Negative"
-        })
-      })
-
-      _this.quantity = 0
-      _this.courseId = 0
-      _this.prompt = false
+    show_review_dialog(id) {
+      this.review_id = id
+      this.prompt = true
     },
-    request_data()  {
-      let _this = this
-      let arr = []
-      api.get("api/xadmin/v1/attends").then(function (response1) {
-
-        api.get("api/xadmin/v1/reviews",).then(function (response2){
-
-          //console.log(response1)
-          let Res = response1.data
-          let res = Res.data
-          let Res2 = response2
-          let res2 = Res2.data
-
-          for (let i = 0; i < res.length; i++) {
-            for (let j = 0; j < res2.length; j++) {
-              if(res[i].user_id === sessionStorage.getItem('user_id')){
-                let item = {
-                  course_id: 0,
-                  user_id: "",
-                  date: "",
-                  des: "",
-                  score: ""
-                }
-                item.course_id = res[i].course
-                item.name = res[i].name
-                item.date = res[i].course_date_time
-                item.coach = res[i].coach
-                item.description = res[i].description
-                if(res2[j].user_id === res[i].user_id){
-                  item.score = res2[j].score
-                }
-                arr.push(item)
-
-              }
-            }
-          }
-          _this.data = arr
-          console.log(_this.data)
-        })
-
-      }).catch(function (error) {
+    submit_review() {
+      if(this.star > 5 || this.star < 0)
+      {
         Notify.create({
-          message: "Load error",
-          color: "Negative"
+          message: 'Invalid star!',
+          type: 'negative'
+          }
+        )
+        return
+      }
+      if(this.review_text === "")
+      {
+        Notify.create({
+            message: 'Please input your review!',
+            type: 'negative'
+          }
+        )
+        return
+      }
+      api.post('/api/xadmin/v1/reviews', {
+        rating: this.star,
+        review_text: this.review_text,
+        attend_course: this.review_id
+      }).then(res => {
+        console.log(res)
+        Notify.create({
+          message: 'Success',
+          type: 'postive'
+        })
+        this.prompt = false
+        this.$router.go(0)
+      }).catch(err => {
+        console.log(err)
+        Notify.create({
+          message: 'Internal error',
+          type: 'negative'
         })
       })
     }
