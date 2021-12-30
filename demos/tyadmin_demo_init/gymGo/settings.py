@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'api',
     'captcha',
     'tyadmin_api_cli',
-    'tyadmin_api'
+    'tyadmin_api',
+    'corsheaders',
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -52,7 +53,24 @@ TY_ADMIN_CONFIG = {
     'GEN_APPS': ['api']
 }
 
+CORS_ORIGIN_WHITELIST = (
+ 'http://127.0.0.1:8000',
+ 'http://localhost:8080',
+ 'http://192.168.31.88:8000'
+)
+
+CORS_ALLOW_METHODS = (
+ 'DELETE',
+ 'GET',
+ 'OPTIONS',
+ 'PATCH',
+ 'POST',
+ 'PUT',
+ 'VIEW',
+)
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

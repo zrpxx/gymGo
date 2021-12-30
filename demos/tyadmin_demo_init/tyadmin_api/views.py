@@ -80,13 +80,17 @@ class MenuView(views.APIView):
     def get(self, request, *args, **kwargs):
         # content = json.loads(request.body)
         # uid = content['id']
-        user = User.objects.get(id=1)
-        if is_superadmin(user):
+        user_id = self.request.query_params.get("user_id", None)
+        if user_id is None or user_id is "null":
             data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/menu.json')
-        elif is_coach(user):
-            data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/coach_menu.json')
         else:
-            data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/maintainer_menu.json')
+            user = User.objects.get(id=user_id)
+            if is_superadmin(user):
+                data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/menu.json')
+            elif is_coach(user):
+                data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/coach_menu.json')
+            else:
+                data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/maintainer_menu.json')
         # data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/menu.json')
         with open(data_json, encoding='utf-8') as fr:
             content = fr.read()
@@ -135,7 +139,8 @@ class LoginView(MtyCustomExecView):
                 return JsonResponse({
                     "status": 'ok',
                     "type": "account",
-                    "currentAuthority": ""
+                    "currentAuthority": "",
+                    "user_id": user.id
                 })
             else:
                 raise ValidationError({"password": ["密码错误"]})
