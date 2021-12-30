@@ -21,7 +21,7 @@
 
         <template v-slot:body-cell-Action="props">
           <q-td :props="props">
-            <q-btn icon="shopping_cart" size="sm" flat dense @click="courseName= props.row.name ; courseId = props.row.name ;prompt = true" />
+            <q-btn icon="shopping_cart" size="sm" flat dense @click="courseName= props.row.name ; courseId = props.row.id ;prompt = true" />
 
           </q-td>
         </template>
@@ -154,12 +154,27 @@ export default defineComponent({
       let _this = this
       let flag = true
 
-      api.post('/api/xadmin/v1/buys',{
-        customer: sessionStorage.getItem('user_id'),
-        course: _this.courseId,
-        course_left:_this.quantity
+      api.get('/userapi/buy_course',{
+        params: {
+          "user_id": sessionStorage.getItem('user_id'),
+          "course_id": _this.courseId,
+          "time":_this.quantity
+        }
+
       }).then(function (response){
         console.log('hihi' + response)
+        let res = response.data
+        if(res.status === 'ok'){
+          Notify.create({
+            message: "Buy course succeeded",
+            color: "positive"
+          })
+        }else{
+          Notify.create({
+            message: "Insufficient account balance",
+            color: "negative"
+          })
+        }
 
       }).catch(function (error){
         Notify.create({
@@ -192,7 +207,7 @@ export default defineComponent({
           item.name = res[i].name
           item.type = res[i].type
           item.price = res[i].price
-          item.coach = res[i].coach
+          item.coach = res[i].coach.username
           item.description = res[i].description
           arr.push(item)
         }
