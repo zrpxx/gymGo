@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password
 from django.shortcuts import render
 from django.views import View
 from rest_framework.views import APIView
-
+from api.models import User
 from tyadmin_api_cli.contants import SYS_LABELS
 from tyadmin_api.custom import XadminViewSet, custom_exception_handler
 from tyadmin_api.filters import TyAdminSysLogFilter, TyAdminEmailVerifyRecordFilter
@@ -62,10 +62,33 @@ class RichUploadSerializer(serializers.Serializer):
 
 SysUser = get_user_model()
 
+def is_superadmin(user):
+    return user.groups.filter(name="superadmin").exists() 
+
+def is_coach(user):
+    return user.groups.filter(name="coach").exists()
+
+
+def is_maintainer(user):
+    return user.groups.filter(name="maintainer").exists()
+
 
 class MenuView(views.APIView):
     def get(self, request, *args, **kwargs):
-        data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/menu.json')
+        # content = json.loads(request.body)
+        # uid = content['id']
+        user_id = self.request.query_params.get("user_id", None)
+        if (user_id is None) or (user_id == "null"):
+            data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/menu.json')
+        else:
+            user = User.objects.get(id=user_id)
+            if is_superadmin(user):
+                data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/menu.json')
+            elif is_coach(user):
+                data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/coach_menu.json')
+            else:
+                data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/maintainer_menu.json')
+        # data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/menu.json')
         with open(data_json, encoding='utf-8') as fr:
             content = fr.read()
         import demjson
@@ -74,6 +97,7 @@ class MenuView(views.APIView):
         return JsonResponse({
             "data": content
         })
+
 
 
 class DashBoardView(views.APIView):
@@ -99,8 +123,9 @@ class LoginView(MtyCustomExecView):
             pic_captcha = request.data["pic_captcha"]
             key = request.data["key"]
             try:
-                captcha = CaptchaStore.objects.get(challenge=pic_captcha.upper(), hashkey=key)
-                captcha.delete()
+                pass
+                # captcha = CaptchaStore.objects.get(challenge=pic_captcha.upper(), hashkey=key)
+                # captcha.delete()
             except CaptchaStore.DoesNotExist:
                 raise ValidationError({"pic_captcha": ["验证码不正确"]})
             user = authenticate(request, username=request.data["userName"], password=request.data["password"])
@@ -112,7 +137,8 @@ class LoginView(MtyCustomExecView):
                 return JsonResponse({
                     "status": 'ok',
                     "type": "account",
-                    "currentAuthority": ""
+                    "currentAuthority": "",
+                    "user_id": user.id
                 })
             else:
                 raise ValidationError({"password": ["密码错误"]})

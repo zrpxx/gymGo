@@ -28,100 +28,90 @@
         ]
     },
     {
-        name: 'Demo',
+        name: 'Api',
         icon: 'BarsOutlined',
-        path: '/xadmin/demo',
+        path: '/xadmin/api',
         routes:
         [
             {
-                name: '全部字段非必填[被外键关联]',
-                path: '/xadmin/demo/demo_foreign_key',
-                component: './AutoGenPage/DemoForeignKeyList',
-            },
-            {
-                name: '标签[被多对多关联]',
-                path: '/xadmin/demo/tags',
-                component: './AutoGenPage/TagsList',
-            },
-            {
-                name: '分类[被外键关联]',
-                path: '/xadmin/demo/category',
-                component: './AutoGenPage/CategoryList',
-            },
-            {
-                name: '富文本示例[关联外键，多对多标签]',
-                path: '/xadmin/demo/rich_text_demo',
-                component: './AutoGenPage/RichTextDemoList',
-            },
-            {
-                name: '下拉选择示例(choices)',
-                path: '/xadmin/demo/demo_model_require',
-                component: './AutoGenPage/DemoModelRequireList',
-            },
-            {
-                name: '全部字段类型-必填',
-                path: '/xadmin/demo/demo_model',
-                component: './AutoGenPage/DemoModelList',
-            },
-            {
-                name: '全部字段类型-提供默认值',
-                path: '/xadmin/demo/demo_default_model',
-                component: './AutoGenPage/DemoDefaultModelList',
-            },
-            {
                 name: '用户管理',
-                path: '/xadmin/demo/user_profile',
-                component: './AutoGenPage/UserProfileList',
+                path: '/xadmin/api/user',
+                component: './AutoGenPage/UserList',
             },
             {
-                name: 'agendas',
-                path: '/xadmin/demo/agendas',
+                name: '区域管理',
+                path: '/xadmin/api/zones',
+                component: './AutoGenPage/ZonesList',
+            },
+            {
+                name: '顾客信息管理',
+                path: '/xadmin/api/customers',
+                component: './AutoGenPage/CustomersList',
+            },
+            {
+                name: '日程管理',
+                path: '/xadmin/api/agendas',
                 component: './AutoGenPage/AgendasList',
             },
             {
-                name: 'archive body data',
-                path: '/xadmin/demo/archive_body_data',
+                name: '身体数据（存档）',
+                path: '/xadmin/api/archive_body_data',
                 component: './AutoGenPage/ArchiveBodyDataList',
             },
             {
-                name: 'attends',
-                path: '/xadmin/demo/attends',
-                component: './AutoGenPage/AttendsList',
-            },
-            {
-                name: 'bills',
-                path: '/xadmin/demo/bills',
+                name: '账单管理',
+                path: '/xadmin/api/bills',
                 component: './AutoGenPage/BillsList',
             },
             {
-                name: 'body data',
-                path: '/xadmin/demo/body_data',
+                name: '身体数据',
+                path: '/xadmin/api/body_data',
                 component: './AutoGenPage/BodyDataList',
             },
             {
-                name: 'buys',
-                path: '/xadmin/demo/buys',
+                name: '课程管理',
+                path: '/xadmin/api/curriculums',
+                component: './AutoGenPage/CurriculumsList',
+            },
+            {
+                name: '课程参加记录管理',
+                path: '/xadmin/api/attends',
+                component: './AutoGenPage/AttendsList',
+            },
+            {
+                name: '课余量管理',
+                path: '/xadmin/api/buys',
                 component: './AutoGenPage/BuysList',
             },
             {
-                name: 'check logs',
-                path: '/xadmin/demo/check_logs',
+                name: '设备管理',
+                path: '/xadmin/api/equipment',
+                component: './AutoGenPage/EquipmentList',
+            },
+            {
+                name: '维护日志',
+                path: '/xadmin/api/check_logs',
                 component: './AutoGenPage/CheckLogsList',
             },
             {
-                name: 'lockers',
-                path: '/xadmin/demo/lockers',
+                name: '柜子管理',
+                path: '/xadmin/api/lockers',
                 component: './AutoGenPage/LockersList',
             },
             {
-                name: 'reviews',
-                path: '/xadmin/demo/reviews',
+                name: '评论管理',
+                path: '/xadmin/api/reviews',
                 component: './AutoGenPage/ReviewsList',
             },
             {
-                name: 'visits',
-                path: '/xadmin/demo/visits',
-                component: './AutoGenPage/VisitsList',
+                name: '设备预约',
+                path: '/xadmin/api/reserve_equipment',
+                component: './AutoGenPage/ReserveEquipmentList',
+            },
+            {
+                name: '教练日程预约',
+                path: '/xadmin/api/reserve_agenda',
+                component: './AutoGenPage/ReserveAgendaList',
             }
         ]
     },

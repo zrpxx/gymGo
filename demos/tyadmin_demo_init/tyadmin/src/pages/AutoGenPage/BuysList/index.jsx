@@ -8,7 +8,7 @@ import CreateForm from './components/CreateForm';
 import { addBuys, queryBuys, removeBuys, updateBuys, queryBuysVerboseName, queryBuysListDisplay, queryBuysDisplayOrder} from './service';
 import UpdateForm from './components/UpdateForm';
 import UploadAvatar from '@/components/UploadAvatar';
-
+import {queryCustomers, queryCustomersVerboseName} from '@/pages/AutoGenPage/CustomersList/service';import {queryCurriculums, queryCurriculumsVerboseName} from '@/pages/AutoGenPage/CurriculumsList/service';
 
 import moment from 'moment';
 const { Option } = Select;
@@ -68,7 +68,7 @@ const TableList = () => {
  
   const dateFieldList = []
   const base_columns = [{
-                             title: 'id',
+                             title: '购买ID',
                              
         hideInForm: true,
         hideInSearch: true,
@@ -83,15 +83,60 @@ const TableList = () => {
                              
                         },
                       {
-                             title: 'course_left',
+                             title: '剩余课时',
                              
                              
                              dataIndex: 'course_left',
                              valueType: 'digit',
                              rules: [
-                                     
+                                     {
+                      required: true,
+                      message: '剩余课时为必填项',
+                     },
                              ],
                              
+                             
+                        },
+                      {
+                             title: '顾客',
+                             
+                             
+                             dataIndex: 'customer',
+                             
+                             rules: [
+                                     {
+                      required: true,
+                      message: '顾客为必填项',
+                     },
+                             ],
+                             
+                        renderFormItem: (item, {value, onChange}) => {
+                                          return dealForeignKeyField(item, value, onChange, customerForeignKeyList);
+                                  },
+                        render: (text, record) => {
+                              return renderForeignKey(text, customerVerboseNameMap);
+                            },
+                             
+                        },
+                      {
+                             title: '课程',
+                             
+                             
+                             dataIndex: 'course',
+                             
+                             rules: [
+                                     {
+                      required: true,
+                      message: '课程为必填项',
+                     },
+                             ],
+                             
+                        renderFormItem: (item, {value, onChange}) => {
+                                          return dealForeignKeyField(item, value, onChange, courseForeignKeyList);
+                                  },
+                        render: (text, record) => {
+                              return renderForeignKey(text, courseVerboseNameMap);
+                            },
                              
                         },
                           {
@@ -110,7 +155,7 @@ const TableList = () => {
                                   }} />
                                   <Divider type="vertical" />
                                   <Popconfirm
-                                    title="您确定要删除buys吗？"
+                                    title="您确定要删除课余量管理吗？"
                                     placement="topRight"
                                     onConfirm={() => {
                                       handleRemove([record])
@@ -155,6 +200,30 @@ const TableList = () => {
 
 
    
+                                const [customerForeignKeyList, setCustomerForeignKeyList] = useState([]);
+                                useEffect(() => {
+                                queryCustomers({all: 1}).then(value => {
+                                     setCustomerForeignKeyList(value);
+                                });
+                                }, []);
+                                const [customerVerboseNameMap, setCustomerVerboseNameMap] = useState([]);
+                                useEffect(() => {
+                                queryCustomersVerboseName().then(value => {
+                                    setCustomerVerboseNameMap(value);
+                                });
+                                }, []);
+                                const [courseForeignKeyList, setCourseForeignKeyList] = useState([]);
+                                useEffect(() => {
+                                queryCurriculums({all: 1}).then(value => {
+                                     setCourseForeignKeyList(value);
+                                });
+                                }, []);
+                                const [courseVerboseNameMap, setCourseVerboseNameMap] = useState([]);
+                                useEffect(() => {
+                                queryCurriculumsVerboseName().then(value => {
+                                    setCourseVerboseNameMap(value);
+                                });
+                                }, []);
 
    
   return (
@@ -168,17 +237,17 @@ const TableList = () => {
         scroll={{ x: '100%' }}
         columnsStateMap={columnsStateMap}
         onColumnsStateChange={(map) => setColumnsStateMap(map)}
-        headerTitle="buys表格"
+        headerTitle="课余量管理表格"
         actionRef={actionRef}
         rowKey="id"
         toolBarRender={(action, { selectedRows }) => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
           </Button>,
-          <Button type="primary" onClick={() => exportExcelAll(paramState, queryBuys, table_columns, 'buys-All')}>
+          <Button type="primary" onClick={() => exportExcelAll(paramState, queryBuys, table_columns, '课余量管理-All')}>
             <ExportOutlined /> 导出全部
           </Button>,
-          <Input.Search style={{ marginRight: 20 }} placeholder="搜索buys" onSearch={value => {
+          <Input.Search style={{ marginRight: 20 }} placeholder="搜索课余量管理" onSearch={value => {
             setParamState({
               search: value,
             });
@@ -194,7 +263,7 @@ const TableList = () => {
                       actionRef.current.reloadAndRest();
                     }
                     else if (e.key === 'export_current') {
-                      exportExcelCurrent(selectedRows, table_columns, 'buys-select')
+                      exportExcelCurrent(selectedRows, table_columns, '课余量管理-select')
                     }
                   }}
                   selectedKeys={[]}

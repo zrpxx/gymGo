@@ -8,7 +8,7 @@ import CreateForm from './components/CreateForm';
 import { addLockers, queryLockers, removeLockers, updateLockers, queryLockersVerboseName, queryLockersListDisplay, queryLockersDisplayOrder} from './service';
 import UpdateForm from './components/UpdateForm';
 import UploadAvatar from '@/components/UploadAvatar';
-
+import {queryCustomers, queryCustomersVerboseName} from '@/pages/AutoGenPage/CustomersList/service';
 
 import moment from 'moment';
 const { Option } = Select;
@@ -66,9 +66,9 @@ const TableList = () => {
     }
   };
  
-  const dateFieldList = ["created_at","updated_at","deleted_at","occupied_since"]
+  const dateFieldList = ["occupied_since"]
   const base_columns = [{
-                             title: 'id',
+                             title: '柜子ID',
                              
         hideInForm: true,
         hideInSearch: true,
@@ -83,63 +83,54 @@ const TableList = () => {
                              
                         },
                       {
-                             title: 'created_at',
-                             
-                             
-                             dataIndex: 'created_at',
-                             valueType: 'dateTime',
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'updated_at',
-                             
-                             
-                             dataIndex: 'updated_at',
-                             valueType: 'dateTime',
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'deleted_at',
-                             
-                             
-                             dataIndex: 'deleted_at',
-                             valueType: 'dateTime',
-                             rules: [
-                                     
-                             ],
-                             
-                             
-                        },
-                      {
-                             title: 'status',
+                             title: '柜子状态',
                              
                              
                              dataIndex: 'status',
-                             valueType: 'textarea',
+                             valueType: 'digit',
                              rules: [
-                                     
+                                     {
+                      required: true,
+                      message: '柜子状态为必填项',
+                     },
                              ],
                              
                              
                         },
                       {
-                             title: 'occupied_since',
+                             title: '占用时间',
                              
                              
                              dataIndex: 'occupied_since',
                              valueType: 'dateTime',
                              rules: [
-                                     
+                                     {
+                      required: true,
+                      message: '占用时间为必填项',
+                     },
                              ],
                              
+                             
+                        },
+                      {
+                             title: '占用者',
+                             
+                             
+                             dataIndex: 'occupied_by',
+                             
+                             rules: [
+                                     {
+                      required: true,
+                      message: '占用者为必填项',
+                     },
+                             ],
+                             
+                        renderFormItem: (item, {value, onChange}) => {
+                                          return dealForeignKeyField(item, value, onChange, occupied_byForeignKeyList);
+                                  },
+                        render: (text, record) => {
+                              return renderForeignKey(text, occupied_byVerboseNameMap);
+                            },
                              
                         },
                           {
@@ -152,13 +143,13 @@ const TableList = () => {
                                 <>
 
                                   <EditOutlined title="编辑" className="icon" onClick={async () => {
-                                   record.created_at = record.created_at === null ? record.created_at : moment(record.created_at);record.updated_at = record.updated_at === null ? record.updated_at : moment(record.updated_at);record.deleted_at = record.deleted_at === null ? record.deleted_at : moment(record.deleted_at);record.occupied_since = record.occupied_since === null ? record.occupied_since : moment(record.occupied_since);
+                                   record.occupied_since = record.occupied_since === null ? record.occupied_since : moment(record.occupied_since);
                                     handleUpdateModalVisible(true);
                                     setUpdateFormValues(record);
                                   }} />
                                   <Divider type="vertical" />
                                   <Popconfirm
-                                    title="您确定要删除lockers吗？"
+                                    title="您确定要删除柜子管理吗？"
                                     placement="topRight"
                                     onConfirm={() => {
                                       handleRemove([record])
@@ -203,6 +194,18 @@ const TableList = () => {
 
 
    
+                                const [occupied_byForeignKeyList, setOccupied_byForeignKeyList] = useState([]);
+                                useEffect(() => {
+                                queryCustomers({all: 1}).then(value => {
+                                     setOccupied_byForeignKeyList(value);
+                                });
+                                }, []);
+                                const [occupied_byVerboseNameMap, setOccupied_byVerboseNameMap] = useState([]);
+                                useEffect(() => {
+                                queryCustomersVerboseName().then(value => {
+                                    setOccupied_byVerboseNameMap(value);
+                                });
+                                }, []);
 
    
   return (
@@ -216,17 +219,17 @@ const TableList = () => {
         scroll={{ x: '100%' }}
         columnsStateMap={columnsStateMap}
         onColumnsStateChange={(map) => setColumnsStateMap(map)}
-        headerTitle="lockers表格"
+        headerTitle="柜子管理表格"
         actionRef={actionRef}
         rowKey="id"
         toolBarRender={(action, { selectedRows }) => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
           </Button>,
-          <Button type="primary" onClick={() => exportExcelAll(paramState, queryLockers, table_columns, 'lockers-All')}>
+          <Button type="primary" onClick={() => exportExcelAll(paramState, queryLockers, table_columns, '柜子管理-All')}>
             <ExportOutlined /> 导出全部
           </Button>,
-          <Input.Search style={{ marginRight: 20 }} placeholder="搜索lockers" onSearch={value => {
+          <Input.Search style={{ marginRight: 20 }} placeholder="搜索柜子管理" onSearch={value => {
             setParamState({
               search: value,
             });
@@ -242,7 +245,7 @@ const TableList = () => {
                       actionRef.current.reloadAndRest();
                     }
                     else if (e.key === 'export_current') {
-                      exportExcelCurrent(selectedRows, table_columns, 'lockers-select')
+                      exportExcelCurrent(selectedRows, table_columns, '柜子管理-select')
                     }
                   }}
                   selectedKeys={[]}

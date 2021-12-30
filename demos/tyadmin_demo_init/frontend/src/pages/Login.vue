@@ -34,7 +34,6 @@
                 label="Password"
                 lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please input your username']"
-
               />
 
               <div>

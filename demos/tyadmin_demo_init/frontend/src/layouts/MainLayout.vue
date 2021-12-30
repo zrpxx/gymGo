@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+    <q-header elevated v-if="this.$route.path !== '/' && this.$route.path !== '/register'">
       <q-toolbar>
         <q-btn
           flat
@@ -16,7 +16,13 @@
         <q-space/>
         <div class="q-gutter-sm row items-center no-wrap">
         </div>
+        <q-btn round flat>
+          <q-avatar size="26px">
+            <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+          </q-avatar>
+        </q-btn>
       </q-toolbar>
+
     </q-header>
 
     <q-drawer
@@ -24,10 +30,11 @@
       show-if-above
       bordered
       class="bg-primary text-white"
+      v-if="this.$route.path !== '/' && this.$route.path !== '/register'"
     >
-      <q-list>
-      <!--        预约-->
-        <q-item to="" active-class="q-item-no-link-highlighting">
+      <q-list class="q-mt-xl">
+        <!--        预约-->
+        <q-item class="q-my-sm" to="" active-class="q-item-no-link-highlighting">
           <q-item-section avatar>
             <q-icon name="date_range"/>
           </q-item-section>
@@ -37,9 +44,9 @@
         </q-item>
 
         <!--  课程      -->
-        <q-expansion-item
-          icon="insert_chart"
-          label="Curriculum"
+        <q-expansion-item class="q-my-sm"
+                          icon="insert_chart"
+                          label="Curriculum"
         >
           <q-list class="q-pl-lg">
             <q-item to="/all_course" active-class="q-item-no-link-highlighting">
@@ -69,18 +76,18 @@
 
           </q-list>
         </q-expansion-item>
-        <q-expansion-item
-          icon="dashboard"
-          label="Equipment"
+        <q-expansion-item class="q-my-sm"
+                          icon="dashboard"
+                          label="Equipment"
         >
           <q-list class="q-pl-lg">
-            <q-item to="" active-class="q-item-no-link-highlighting">
+            <q-item to="/equipment" active-class="q-item-no-link-highlighting">
 
               <q-item-section>
                 <q-item-label>All equipment</q-item-label>
               </q-item-section>
             </q-item>
-            <q-item to="/MapMarker" active-class="q-item-no-link-highlighting">
+            <q-item to="/booked_equipment" active-class="q-item-no-link-highlighting">
 
               <q-item-section>
                 <q-item-label>My booked</q-item-label>
@@ -90,7 +97,7 @@
           </q-list>
         </q-expansion-item>
 
-        <q-item to="/Dashboard2" active-class="q-item-no-link-highlighting">
+        <q-item to="/Dashboard2" active-class="q-item-no-link-highlighting" class="q-my-sm">
           <q-item-section avatar>
             <q-icon name="map"/>
           </q-item-section>
@@ -98,7 +105,7 @@
             <q-item-label>Locker</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item to="" active-class="q-item-no-link-highlighting">
+        <q-item to="/Dashboard2" active-class="q-item-no-link-highlighting" class="q-my-sm">
           <q-item-section avatar>
             <q-icon name="dashboard"/>
           </q-item-section>
@@ -106,7 +113,7 @@
             <q-item-label>Zone</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item to="/Dashboard2" active-class="q-item-no-link-highlighting">
+        <q-item to="/profile" active-class="q-item-no-link-highlighting" class="q-my-sm">
           <q-item-section avatar>
             <q-icon name="person"/>
           </q-item-section>

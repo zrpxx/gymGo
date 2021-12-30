@@ -6,7 +6,7 @@ const CreateForm = props => {
   return (
     <Modal
       destroyOnClose
-      title="新建lockers"
+      title="新建柜子管理"
       visible={modalVisible}
       width={800}
       onCancel={() => onCancel()}

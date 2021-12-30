@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
-from demo.models import DemoForeignKey, Tags, Category, RichTextDemo, DemoModelRequire, DemoModel, DemoDefaultModel, UserProfile, Agendas, ArchiveBodyData, Attends, Bills, BodyData, Buys, CheckLogs, Lockers, Reviews, Visits
+from api.models import User, Zones, Customers, Agendas, ArchiveBodyData, Bills, BodyData, Curriculums, Attends, Buys, Equipment, CheckLogs, Lockers, Reviews, ReserveEquipment, ReserveAgenda
 
 
 class ContentTypeListSerializer(serializers.ModelSerializer):
@@ -32,14 +32,14 @@ class ContentTypeCreateUpdateSerializer(serializers.ModelSerializer):
         return str(obj)
 
 
-class DemoForeignKeyListSerializer(serializers.ModelSerializer):
+class ZonesListSerializer(serializers.ModelSerializer):
     
 
     key = serializers.CharField(source="pk")
     ty_options_display_txt = serializers.SerializerMethodField()
 
     class Meta:
-        model = DemoForeignKey
+        model = Zones
         fields = "__all__"
 
     @staticmethod
@@ -47,404 +47,12 @@ class DemoForeignKeyListSerializer(serializers.ModelSerializer):
         return str(obj)
 
 
-class DemoForeignKeyCreateUpdateSerializer(serializers.ModelSerializer):
+class ZonesCreateUpdateSerializer(serializers.ModelSerializer):
     
     ty_options_display_txt = serializers.SerializerMethodField()
 
     class Meta:
-        model = DemoForeignKey
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class TagsListSerializer(serializers.ModelSerializer):
-    
-
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Tags
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class TagsCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Tags
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class CategoryListSerializer(serializers.ModelSerializer):
-    
-
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Category
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class CategoryCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Category
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class DemoModelRequireListSerializer(serializers.ModelSerializer):
-    
-
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = DemoModelRequire
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class DemoModelRequireCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = DemoModelRequire
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class DemoDefaultModelListSerializer(serializers.ModelSerializer):
-    
-
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = DemoDefaultModel
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class DemoDefaultModelCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = DemoDefaultModel
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class AgendasListSerializer(serializers.ModelSerializer):
-    
-
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Agendas
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class AgendasCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Agendas
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class ArchiveBodyDataListSerializer(serializers.ModelSerializer):
-    
-
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = ArchiveBodyData
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class ArchiveBodyDataCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = ArchiveBodyData
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class AttendsListSerializer(serializers.ModelSerializer):
-    
-
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Attends
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class AttendsCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Attends
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class BillsListSerializer(serializers.ModelSerializer):
-    
-
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Bills
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class BillsCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Bills
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class BodyDataListSerializer(serializers.ModelSerializer):
-    
-
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = BodyData
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class BodyDataCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = BodyData
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class BuysListSerializer(serializers.ModelSerializer):
-    
-
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Buys
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class BuysCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Buys
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class CheckLogsListSerializer(serializers.ModelSerializer):
-    
-
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = CheckLogs
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class CheckLogsCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = CheckLogs
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class LockersListSerializer(serializers.ModelSerializer):
-    
-
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Lockers
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class LockersCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Lockers
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class ReviewsListSerializer(serializers.ModelSerializer):
-    
-
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Reviews
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class ReviewsCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Reviews
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class VisitsListSerializer(serializers.ModelSerializer):
-    
-
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Visits
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class VisitsCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Visits
+        model = Zones
         fields = "__all__"
 
     @staticmethod
@@ -526,99 +134,7 @@ class GroupCreateUpdateSerializer(serializers.ModelSerializer):
         return str(obj)
 
 
-class RichTextDemoListSerializer(serializers.ModelSerializer):
-    
-
-    class UserProfileSerializer(serializers.ModelSerializer):
-        ty_options_display_txt = serializers.SerializerMethodField()
-        class Meta:
-            model = UserProfile
-            fields = "__all__"
-        @staticmethod
-        def get_ty_options_display_txt(obj):
-            return str(obj)
-    user = UserProfileSerializer()
-    class CategorySerializer(serializers.ModelSerializer):
-        ty_options_display_txt = serializers.SerializerMethodField()
-        class Meta:
-            model = Category
-            fields = "__all__"
-        @staticmethod
-        def get_ty_options_display_txt(obj):
-            return str(obj)
-    category = CategorySerializer()
-    class TagsSerializer(serializers.ModelSerializer):
-        ty_options_display_txt = serializers.SerializerMethodField()
-        class Meta:
-            model = Tags
-            fields = "__all__"
-        @staticmethod
-        def get_ty_options_display_txt(obj):
-            return str(obj)
-    tags = TagsSerializer(many=True)
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = RichTextDemo
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class RichTextDemoCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = RichTextDemo
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class DemoModelListSerializer(serializers.ModelSerializer):
-    
-
-    class DemoForeignKeySerializer(serializers.ModelSerializer):
-        ty_options_display_txt = serializers.SerializerMethodField()
-        class Meta:
-            model = DemoForeignKey
-            fields = "__all__"
-        @staticmethod
-        def get_ty_options_display_txt(obj):
-            return str(obj)
-    foreign_key_field = DemoForeignKeySerializer()
-    key = serializers.CharField(source="pk")
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = DemoModel
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class DemoModelCreateUpdateSerializer(serializers.ModelSerializer):
-    
-    ty_options_display_txt = serializers.SerializerMethodField()
-
-    class Meta:
-        model = DemoModel
-        fields = "__all__"
-
-    @staticmethod
-    def get_ty_options_display_txt(obj):
-        return str(obj)
-
-
-class UserProfileListSerializer(serializers.ModelSerializer):
+class UserListSerializer(serializers.ModelSerializer):
     
 
     class GroupSerializer(serializers.ModelSerializer):
@@ -643,7 +159,7 @@ class UserProfileListSerializer(serializers.ModelSerializer):
     ty_options_display_txt = serializers.SerializerMethodField()
 
     class Meta:
-        model = UserProfile
+        model = User
         fields = "__all__"
 
     @staticmethod
@@ -651,12 +167,586 @@ class UserProfileListSerializer(serializers.ModelSerializer):
         return str(obj)
 
 
-class UserProfileCreateUpdateSerializer(serializers.ModelSerializer):
+class UserCreateUpdateSerializer(serializers.ModelSerializer):
     
     ty_options_display_txt = serializers.SerializerMethodField()
 
     class Meta:
-        model = UserProfile
+        model = User
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+    def create(self, validated_data):
+        instance = super().create(validated_data)
+        instance.set_password(self.validated_data['password'])
+        instance.save()
+        return instance
+
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+        instance.save()
+        return
+
+
+class CustomersListSerializer(serializers.ModelSerializer):
+    
+
+    class ZonesSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = Zones
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    current_zone = ZonesSerializer()
+    key = serializers.CharField(source="pk")
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Customers
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class CustomersCreateUpdateSerializer(serializers.ModelSerializer):
+    
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Customers
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class AgendasListSerializer(serializers.ModelSerializer):
+    
+
+    class UserSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = User
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    coach = UserSerializer()
+    key = serializers.CharField(source="pk")
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Agendas
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class AgendasCreateUpdateSerializer(serializers.ModelSerializer):
+    
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Agendas
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class ArchiveBodyDataListSerializer(serializers.ModelSerializer):
+    
+
+    class CustomersSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = Customers
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    customer = CustomersSerializer()
+    key = serializers.CharField(source="pk")
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ArchiveBodyData
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class ArchiveBodyDataCreateUpdateSerializer(serializers.ModelSerializer):
+    
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ArchiveBodyData
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class BillsListSerializer(serializers.ModelSerializer):
+    
+
+    class CustomersSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = Customers
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    customer = CustomersSerializer()
+    key = serializers.CharField(source="pk")
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Bills
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class BillsCreateUpdateSerializer(serializers.ModelSerializer):
+    
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Bills
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class BodyDataListSerializer(serializers.ModelSerializer):
+    
+
+    class CustomersSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = Customers
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    customer = CustomersSerializer()
+    key = serializers.CharField(source="pk")
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = BodyData
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class BodyDataCreateUpdateSerializer(serializers.ModelSerializer):
+    
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = BodyData
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class CurriculumsListSerializer(serializers.ModelSerializer):
+    
+
+    class UserSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = User
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    coach = UserSerializer()
+    key = serializers.CharField(source="pk")
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Curriculums
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class CurriculumsCreateUpdateSerializer(serializers.ModelSerializer):
+    
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Curriculums
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class AttendsListSerializer(serializers.ModelSerializer):
+    
+
+    class CurriculumsSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = Curriculums
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    course = CurriculumsSerializer()
+    class CustomersSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = Customers
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    customer = CustomersSerializer()
+    key = serializers.CharField(source="pk")
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Attends
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class AttendsCreateUpdateSerializer(serializers.ModelSerializer):
+    
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Attends
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class BuysListSerializer(serializers.ModelSerializer):
+    
+
+    class CustomersSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = Customers
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    customer = CustomersSerializer()
+    class CurriculumsSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = Curriculums
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    course = CurriculumsSerializer()
+    key = serializers.CharField(source="pk")
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Buys
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class BuysCreateUpdateSerializer(serializers.ModelSerializer):
+    
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Buys
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class EquipmentListSerializer(serializers.ModelSerializer):
+    
+
+    class ZonesSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = Zones
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    position = ZonesSerializer()
+    key = serializers.CharField(source="pk")
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Equipment
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class EquipmentCreateUpdateSerializer(serializers.ModelSerializer):
+    
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Equipment
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class CheckLogsListSerializer(serializers.ModelSerializer):
+    
+
+    class EquipmentSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = Equipment
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    equipment = EquipmentSerializer()
+    class UserSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = User
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    maintainer = UserSerializer()
+    key = serializers.CharField(source="pk")
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CheckLogs
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class CheckLogsCreateUpdateSerializer(serializers.ModelSerializer):
+    
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CheckLogs
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class LockersListSerializer(serializers.ModelSerializer):
+    
+
+    class CustomersSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = Customers
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    occupied_by = CustomersSerializer()
+    key = serializers.CharField(source="pk")
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Lockers
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class LockersCreateUpdateSerializer(serializers.ModelSerializer):
+    
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Lockers
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class ReviewsListSerializer(serializers.ModelSerializer):
+    
+
+    class AttendsSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = Attends
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    attend_course = AttendsSerializer()
+    key = serializers.CharField(source="pk")
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Reviews
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class ReviewsCreateUpdateSerializer(serializers.ModelSerializer):
+    
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Reviews
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class ReserveEquipmentListSerializer(serializers.ModelSerializer):
+    
+
+    class CustomersSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = Customers
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    customer = CustomersSerializer()
+    class EquipmentSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = Equipment
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    equipment = EquipmentSerializer()
+    key = serializers.CharField(source="pk")
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ReserveEquipment
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class ReserveEquipmentCreateUpdateSerializer(serializers.ModelSerializer):
+    
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ReserveEquipment
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class ReserveAgendaListSerializer(serializers.ModelSerializer):
+    
+
+    class AgendasSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = Agendas
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    agenda = AgendasSerializer()
+    class CustomersSerializer(serializers.ModelSerializer):
+        ty_options_display_txt = serializers.SerializerMethodField()
+        class Meta:
+            model = Customers
+            fields = "__all__"
+        @staticmethod
+        def get_ty_options_display_txt(obj):
+            return str(obj)
+    customer = CustomersSerializer()
+    key = serializers.CharField(source="pk")
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ReserveAgenda
+        fields = "__all__"
+
+    @staticmethod
+    def get_ty_options_display_txt(obj):
+        return str(obj)
+
+
+class ReserveAgendaCreateUpdateSerializer(serializers.ModelSerializer):
+    
+    ty_options_display_txt = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ReserveAgenda
         fields = "__all__"
 
     @staticmethod

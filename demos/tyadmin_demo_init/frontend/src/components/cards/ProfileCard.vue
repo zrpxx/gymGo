@@ -1,0 +1,76 @@
+<template>
+  <q-card class="bg-transparent no-shadow no-border">
+    <q-card-section class="q-pa-none">
+      <div class="row q-col-gutter-sm ">
+        <div v-for="(item, index) in items" :key="index" class="col-md-3 col-sm-12 col-xs-12">
+          <q-item :style="`background-color: #546bfa`" class="q-pa-none">
+            <q-item-section class=" q-pa-md q-ml-none  text-white">
+              <q-item-label class="text-white text-h6 text-weight-bolder">$ {{ item.balance }}</q-item-label>
+              <q-item-label>Balance</q-item-label>
+            </q-item-section>
+            <q-item-section  side class="q-mr-md text-white">
+              <q-icon :name="account_balance" color="white" size="44px"></q-icon>
+            </q-item-section>
+          </q-item>
+        </div>
+
+        <div v-for="(item, index) in items" :key="index" class="col-md-3 col-sm-12 col-xs-12">
+          <q-item :style="`background-color:#3a9688`" class="q-pa-none">
+            <q-item-section class=" q-pa-md q-ml-none  text-white">
+              <q-item-label class="text-white text-h6 text-weight-bolder">$ {{ item.recharge }}</q-item-label>
+              <q-item-label>Total recharge</q-item-label>
+            </q-item-section>
+            <q-item-section  side class="q-mr-md text-white">
+              <q-icon :name="attach_money" color="white" size="44px"></q-icon>
+            </q-item-section>
+          </q-item>
+        </div>
+
+          <div v-for="(item, index) in items" :key="index" class="col-md-3 col-sm-12 col-xs-12">
+            <q-item :style="`background-color: #7cb342`" class="q-pa-none">
+              <q-item-section class=" q-pa-md q-ml-none  text-white">
+                <q-item-label class="text-white text-h6 text-weight-bolder">{{ item.level }}</q-item-label>
+                <q-item-label>VIP level</q-item-label>
+              </q-item-section>
+              <q-item-section  side class="q-mr-md text-white">
+                <q-icon :name="grade" color="white" size="44px"></q-icon>
+              </q-item-section>
+            </q-item>
+          </div>
+
+        <div v-for="(item, index) in items" :key="index" class="col-md-3 col-sm-12 col-xs-12">
+          <q-item :style="`background-color: #f88c2b`" class="q-pa-none">
+            <q-item-section class=" q-pa-md q-ml-none  text-white">
+              <q-item-label class="text-white text-h6 text-weight-bolder">{{ item.username }}</q-item-label>
+              <q-item-label>ME</q-item-label>
+            </q-item-section>
+            <q-item-section  side class="q-mr-md text-white">
+              <q-icon :name="person" color="white" size="44px"></q-icon>
+            </q-item-section>
+          </q-item>
+        </div>
+        <q-space></q-space>
+      </div>
+    </q-card-section>
+  </q-card>
+</template>
+
+<script>
+import {defineComponent} from 'vue'
+
+export default defineComponent({
+  name: "ProfileCard",
+  computed: {
+    items: function () {
+      return [
+          {
+            balance: "1000",
+            recharge: "1000",
+            level: "2",
+            username: "Tzlz"
+          },
+        ]
+    }
+  }
+})
+</script>

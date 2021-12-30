@@ -8,7 +8,7 @@ import CreateForm from './components/CreateForm';
 import { addReviews, queryReviews, removeReviews, updateReviews, queryReviewsVerboseName, queryReviewsListDisplay, queryReviewsDisplayOrder} from './service';
 import UpdateForm from './components/UpdateForm';
 import UploadAvatar from '@/components/UploadAvatar';
-
+import {queryAttends, queryAttendsVerboseName} from '@/pages/AutoGenPage/AttendsList/service';
 
 import moment from 'moment';
 const { Option } = Select;
@@ -68,7 +68,7 @@ const TableList = () => {
  
   const dateFieldList = []
   const base_columns = [{
-                             title: 'id',
+                             title: '评论ID',
                              
         hideInForm: true,
         hideInSearch: true,
@@ -83,27 +83,54 @@ const TableList = () => {
                              
                         },
                       {
-                             title: 'rating',
+                             title: '评分',
                              
                              
                              dataIndex: 'rating',
-                             valueType: 'digit',
+                             
                              rules: [
-                                     
+                                     {
+                      required: true,
+                      message: '评分为必填项',
+                     },
                              ],
                              
-                             
+                             valueEnum:{"1":"一星","2":"两星","3":"三星","4":"四星","5":"五星"}
                         },
                       {
-                             title: 'review_text',
+                             title: '评论内容',
                              
                              
                              dataIndex: 'review_text',
                              valueType: 'textarea',
                              rules: [
-                                     
+                                     {
+                      required: true,
+                      message: '评论内容为必填项',
+                     },
                              ],
                              
+                             
+                        },
+                      {
+                             title: '课程记录',
+                             
+                             
+                             dataIndex: 'attend_course',
+                             
+                             rules: [
+                                     {
+                      required: true,
+                      message: '课程记录为必填项',
+                     },
+                             ],
+                             
+                        renderFormItem: (item, {value, onChange}) => {
+                                          return dealForeignKeyField(item, value, onChange, attend_courseForeignKeyList);
+                                  },
+                        render: (text, record) => {
+                              return renderForeignKey(text, attend_courseVerboseNameMap);
+                            },
                              
                         },
                           {
@@ -122,7 +149,7 @@ const TableList = () => {
                                   }} />
                                   <Divider type="vertical" />
                                   <Popconfirm
-                                    title="您确定要删除reviews吗？"
+                                    title="您确定要删除评论管理吗？"
                                     placement="topRight"
                                     onConfirm={() => {
                                       handleRemove([record])
@@ -167,6 +194,18 @@ const TableList = () => {
 
 
    
+                                const [attend_courseForeignKeyList, setAttend_courseForeignKeyList] = useState([]);
+                                useEffect(() => {
+                                queryAttends({all: 1}).then(value => {
+                                     setAttend_courseForeignKeyList(value);
+                                });
+                                }, []);
+                                const [attend_courseVerboseNameMap, setAttend_courseVerboseNameMap] = useState([]);
+                                useEffect(() => {
+                                queryAttendsVerboseName().then(value => {
+                                    setAttend_courseVerboseNameMap(value);
+                                });
+                                }, []);
 
    
   return (
@@ -180,17 +219,17 @@ const TableList = () => {
         scroll={{ x: '100%' }}
         columnsStateMap={columnsStateMap}
         onColumnsStateChange={(map) => setColumnsStateMap(map)}
-        headerTitle="reviews表格"
+        headerTitle="评论管理表格"
         actionRef={actionRef}
         rowKey="id"
         toolBarRender={(action, { selectedRows }) => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined /> 新建
           </Button>,
-          <Button type="primary" onClick={() => exportExcelAll(paramState, queryReviews, table_columns, 'reviews-All')}>
+          <Button type="primary" onClick={() => exportExcelAll(paramState, queryReviews, table_columns, '评论管理-All')}>
             <ExportOutlined /> 导出全部
           </Button>,
-          <Input.Search style={{ marginRight: 20 }} placeholder="搜索reviews" onSearch={value => {
+          <Input.Search style={{ marginRight: 20 }} placeholder="搜索评论管理" onSearch={value => {
             setParamState({
               search: value,
             });
@@ -206,7 +245,7 @@ const TableList = () => {
                       actionRef.current.reloadAndRest();
                     }
                     else if (e.key === 'export_current') {
-                      exportExcelCurrent(selectedRows, table_columns, 'reviews-select')
+                      exportExcelCurrent(selectedRows, table_columns, '评论管理-select')
                     }
                   }}
                   selectedKeys={[]}
