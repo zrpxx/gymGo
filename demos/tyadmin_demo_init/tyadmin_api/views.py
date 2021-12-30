@@ -78,7 +78,7 @@ class MenuView(views.APIView):
         # content = json.loads(request.body)
         # uid = content['id']
         user_id = self.request.query_params.get("user_id", None)
-        if user_id is None or user_id is "null":
+        if (user_id is None) or (user_id == "null"):
             data_json = os.path.join(settings.BASE_DIR, 'tyadmin_api/menu.json')
         else:
             user = User.objects.get(id=user_id)
